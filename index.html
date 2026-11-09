@@ -56,14 +56,12 @@
         .hospital-record { border-left: 3px solid #ff6b9d; padding: 10px; margin-bottom: 10px; background: #fef9f7; border-radius: 0 8px 8px 0; }
         .cat-badge { display: inline-block; background: #ff6b9d; color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; }
         .line-chart-container { width: 100%; overflow-x: auto; margin: 10px 0; }
-        .line-chart-container svg { display: block; }
         .weight-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; }
         .weight-row input { flex: 1; padding: 8px; border: 2px solid #f0e0d6; border-radius: 8px; font-size: 14px; }
         .weight-history-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #f5f5f5; font-size: 14px; }
         .weight-history-item .w-date { color: #999; }
         .weight-history-item .w-val { font-weight: bold; color: #ff6b9d; }
         .weight-history-item .w-del { background: none; border: none; color: #ccc; cursor: pointer; font-size: 16px; }
-        .weight-history-item .w-del:hover { color: #ff4444; }
         .empty { text-align: center; padding: 30px; color: #ccc; }
         .empty span { font-size: 50px; display: block; margin-bottom: 10px; }
         .warning { background: #fff3cd; border: 1px solid #ffc107; padding: 10px; border-radius: 8px; text-align: center; color: #856404; margin-bottom: 10px; font-size: 14px; }
@@ -99,7 +97,7 @@
         .tab-row { display: flex; gap: 6px; margin-bottom: 15px; overflow-x: auto; }
         .tab-item { padding: 6px 14px; border-radius: 20px; border: 2px solid #f0e0d6; background: white; cursor: pointer; font-size: 13px; white-space: nowrap; }
         .tab-item.active { background: #ff6b9d; color: white; border-color: #ff6b9d; }
-        /* 同步狀態 */
+        /* ✅ 同步狀態條 */
         .sync-bar { position: fixed; top: 56px; left: 0; right: 0; background: #4caf50; color: white; text-align: center; padding: 6px; font-size: 13px; z-index: 99; display: none; }
         .sync-bar.show { display: block; }
         .sync-bar.error { background: #ff4444; }
@@ -108,7 +106,7 @@
 </head>
 <body>
 
-<!-- 同步狀態條 -->
+<!-- ✅ 同步狀態條 -->
 <div class="sync-bar" id="syncBar"></div>
 
 <!-- HEADER -->
@@ -401,7 +399,7 @@ firebase.initializeApp(firebaseConfig);
 var db = firebase.database();
 var isReady = false;
 
-// 同步狀態提示
+// ✅ 同步狀態提示
 function showBar(msg, type) {
     var bar = document.getElementById('syncBar');
     bar.textContent = msg;
@@ -424,7 +422,7 @@ function save() {
     if (isReady) {
         showBar('🔄 同步中...', 'loading');
         db.ref('catcare').set(data, function(err) {
-            if (err) showBar('❌ 同步失敗，請檢查網絡', 'error');
+            if (err) showBar('❌ 同步失敗', 'error');
             else showBar('✅ 已同步到雲端');
         });
     }
@@ -534,8 +532,7 @@ function saveCat() {
 
 // ============ PROFILE ============
 function showProfile() {
-    var tabs = document.getElementById('catTabs');
-    var card = document.getElementById('profileCard');
+    var tabs=document.getElementById('catTabs'), card=document.getElementById('profileCard');
     tabs.innerHTML='';
     if (data.cats.length===0) {
         card.innerHTML='<div class="empty"><span>🐱</span><p>點擊 ➕ 添加您的貓咪</p></div>';
@@ -586,9 +583,9 @@ function getAdoptDays(d) {
 
 // ============ WEIGHT ============
 function addWeight() {
-    if (data.cats.length===0) return;
+    if (!data.cats.length) return;
     var v=parseFloat(document.getElementById('weightInput').value);
-    if (!v||v<=0) {alert('請輸入體重！');return;}
+    if (!v||v<=0){alert('請輸入體重！');return;}
     var dateVal=document.getElementById('weightDate').value||new Date().toISOString().split('T')[0];
     var p=dateVal.split('-');
     data.cats[data.ci].weights.push({v:v,d:p[1]+'/'+p[2],fullDate:dateVal});
@@ -597,7 +594,7 @@ function addWeight() {
     document.getElementById('weightDate').value=new Date().toISOString().split('T')[0];
     showProfile();
 }
-function deleteWeight(i){ if(confirm('刪除？')){data.cats[data.ci].weights.splice(i,1);save();showProfile();} }
+function deleteWeight(i){if(confirm('刪除？')){data.cats[data.ci].weights.splice(i,1);save();showProfile();}}
 
 function drawLineChart() {
     var container=document.getElementById('lineChartContainer'); container.innerHTML='';
@@ -642,8 +639,7 @@ function showProfileHospital(){
     if(!records.length){document.getElementById('profileHospital').style.display='none';return;}
     document.getElementById('profileHospital').style.display='block';
     var html='';
-    for(var i=records.length-1;i>=0;i--){var r=records[i];html+='<div class="hospital-record"><div style="color:#ff6b9d;font-weight:bold">📅 '+r.date+'</div><div style="font-weight:bold">'+r.reason+'</div>'+(r.hospital?'<div style="color:#666">🏥 '+r.hospital+'</div>':'')+(r.note?'<div style="color:#666">📝 '+r.note+'</div>':'')+(r.cost?'<div style="color:#666">💰 
-```+r.cost+'</div>':'')+'</div>';}
+    for(var i=records.length-1;i>=0;i--){var r=records[i];html+='<div class="hospital-record"><div style="color:#ff6b9d;font-weight:bold">📅 '+r.date+'</div><div style="font-weight:bold">'+r.reason+'</div>'+(r.hospital?'<div style="color:#666">🏥 '+r.hospital+'</div>':'')+(r.note?'<div style="color:#666">📝 '+r.note+'</div>':'')+(r.cost?'<div style="color:#666">💰 $'+r.cost+'</div>':'')+'</div>';}
     document.getElementById('profileHospitalList').innerHTML=html;
 }
 
@@ -733,8 +729,7 @@ function saveHospital(){
 function showHospList(){
     var el=document.getElementById('hospList');
     if(!data.hospital.length){el.innerHTML='<div class="empty"><span>🏥</span><p>還沒有記錄</p></div>';return;}
-    el.innerHTML=data.hospital.slice().sort(function(a,b){return new Date(b.date)-new Date(a.date);}).map(function(r){return'<div class="hospital-record"><div style="color:#ff6b9d;font-weight:bold">📅 '+r.date+'</div><span class="cat-badge">🐱 '+r.catName+'</span><div style="font-weight:bold;margin-top:4px">'+r.reason+'</div>'+(r.hospital?'<div style="color:#666">🏥 '+r.hospital+'</div>':'')+(r.note?'<div style="color:#666">📝 '+r.note+'</div>':'')+(r.cost?'<div style="color:#666">💰 
-```+r.cost+'</div>':'')+'</div>';}).join('');
+    el.innerHTML=data.hospital.slice().sort(function(a,b){return new Date(b.date)-new Date(a.date);}).map(function(r){return'<div class="hospital-record"><div style="color:#ff6b9d;font-weight:bold">📅 '+r.date+'</div><span class="cat-badge">🐱 '+r.catName+'</span><div style="font-weight:bold;margin-top:4px">'+r.reason+'</div>'+(r.hospital?'<div style="color:#666">🏥 '+r.hospital+'</div>':'')+(r.note?'<div style="color:#666">📝 '+r.note+'</div>':'')+(r.cost?'<div style="color:#666">💰 $'+r.cost+'</div>':'')+'</div>';}).join('');
 }
 
 // ============ VACCINE ============
@@ -815,12 +810,11 @@ function setToiletDateTime(){
     document.getElementById('toiletDate').value=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+'T'+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
 }
 
-// ✅ INIT — 從 Firebase 載入數據
+// ✅ INIT — 從 Firebase 載入
 function init() {
     var today=new Date().toISOString().split('T')[0];
     var now=new Date();
     var dtLocal=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+'T'+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-
     document.getElementById('hospDate').value=today;
     document.getElementById('diaryDate').value=today;
     document.getElementById('weightDate').value=today;
@@ -831,7 +825,7 @@ function init() {
 
     showBar('🔄 連線中...', 'loading');
 
-    // ✅ 即時監聽 Firebase 數據變化
+    // ✅ 即時監聽 Firebase 數據
     db.ref('catcare').on('value', function(snapshot) {
         if (snapshot.val()) {
             data = snapshot.val();
@@ -846,12 +840,12 @@ function init() {
             localStorage.setItem('cc3', JSON.stringify(data));
         }
         isReady = true;
-        showBar('✅ 已連線，數據同步中');
+        showBar('✅ 已連線');
         fillSelects();
         showProfile();
         checkVaccineNotif();
     }, function(error) {
-        showBar('❌ 連線失敗：' + error.message, 'error');
+        showBar('❌ 連線失敗', 'error');
         isReady = true;
         fillSelects();
         showProfile();
