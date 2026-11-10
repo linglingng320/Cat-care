@@ -22,8 +22,8 @@
         .notif-banner { background: #ff4444; color: white; padding: 10px 15px; font-size: 14px; cursor: pointer; display: none; }
         .notif-banner.show { display: block; }
         .notif-item { padding: 4px 0; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 100; }
-        .bottom-nav button { flex: 1; padding: 8px 2px; border: none; background: none; cursor: pointer; color: #999; font-size: 10px; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 100; overflow-x: auto; }
+        .bottom-nav button { flex: 1; padding: 8px 2px; border: none; background: none; cursor: pointer; color: #999; font-size: 10px; min-width: 50px; white-space: nowrap; }
         .bottom-nav button.active { color: #ff6b9d; }
         .bottom-nav button span { font-size: 20px; display: block; }
         .page { display: none; padding: 15px; max-width: 600px; margin: 0 auto; }
@@ -42,8 +42,6 @@
         .btn-del { width: auto; padding: 6px 14px; font-size: 13px; background: #ff4444; color: white; border: none; border-radius: 8px; cursor: pointer; }
         .btn-green { background: #4caf50; }
         .record-actions { display: flex; gap: 8px; margin-top: 8px; }
-
-        /* ✅ 輪廓頁面樣式 - 右邊版本 */
         .profile-photo-wrap { text-align: center; margin-bottom: 8px; }
         .profile-photo { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #f0e0d6; background: #fde8ee; display: block; margin: 0 auto; }
         .profile-photo-placeholder { width: 90px; height: 90px; border-radius: 50%; background: #fde8ee; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto; cursor: pointer; }
@@ -54,7 +52,6 @@
         .info-row:last-child { border-bottom: none; }
         .info-row .label { color: #aaa; font-size: 14px; }
         .info-row .value { color: #333; font-size: 14px; font-weight: 500; }
-
         .cat-tabs { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; }
         .cat-tab { padding: 6px 16px; border-radius: 20px; border: 2px solid #ff6b9d; background: white; color: #ff6b9d; cursor: pointer; white-space: nowrap; font-weight: bold; font-size: 14px; }
         .cat-tab.active { background: #ff6b9d; color: white; }
@@ -138,8 +135,6 @@
         .analytics-tip { background: #fff8e1; border-left: 3px solid #ffc107; border-radius: 0 8px 8px 0; padding: 8px 12px; font-size: 13px; color: #856404; margin-top: 6px; }
         .analytics-tip.red { background: #fff0f0; border-color: #ff4444; color: #c62828; }
         .analytics-tip.green { background: #f0fff4; border-color: #4caf50; color: #2e7d32; }
-
-        /* 體重分析樣式 */
         .weight-analysis-card { background: linear-gradient(135deg,#f8f0ff,#ede7f6); border-radius: 12px; padding: 14px; margin-bottom: 10px; border: 1.5px solid #ce93d8; }
         .weight-stat-row { display: flex; justify-content: space-around; margin-bottom: 8px; }
         .weight-stat { text-align: center; }
@@ -149,6 +144,26 @@
         .weight-trend.up { background: #fff0f0; color: #f44336; }
         .weight-trend.down { background: #f0fff4; color: #4caf50; }
         .weight-trend.same { background: #f5f5f5; color: #999; }
+
+        /* ✅ 支出頁面樣式 */
+        .expense-category-btn { display: inline-block; padding: 8px 16px; border-radius: 20px; border: 2px solid #f0e0d6; background: white; color: #999; cursor: pointer; font-size: 13px; margin: 3px; transition: all 0.2s; }
+        .expense-category-btn.selected { border-color: #ff6b9d; background: #fff0f5; color: #ff6b9d; font-weight: bold; }
+        .expense-item { padding: 12px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: flex-start; }
+        .expense-item-left { flex: 1; }
+        .expense-item-title { font-weight: bold; color: #333; font-size: 15px; }
+        .expense-item-meta { color: #999; font-size: 12px; margin-top: 3px; }
+        .expense-item-note { color: #666; font-size: 13px; margin-top: 3px; }
+        .expense-item-right { text-align: right; min-width: 80px; }
+        .expense-amount { font-size: 18px; font-weight: bold; color: #ff6b9d; }
+        .expense-cat-tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-top: 4px; }
+        .expense-stat-card { background: white; border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .expense-stat-amount { font-size: 24px; font-weight: bold; color: #ff6b9d; }
+        .expense-stat-label { font-size: 12px; color: #999; margin-top: 4px; }
+        .expense-chart-bar { display: flex; align-items: center; margin-bottom: 8px; gap: 8px; }
+        .expense-chart-label { font-size: 12px; color: #666; min-width: 60px; }
+        .expense-chart-track { flex: 1; background: #f5f5f5; border-radius: 6px; height: 14px; overflow: hidden; }
+        .expense-chart-fill { height: 100%; border-radius: 6px; transition: width 0.4s; }
+        .expense-chart-num { font-size: 12px; color: #999; min-width: 60px; text-align: right; }
     </style>
 </head>
 <body>
@@ -164,16 +179,12 @@
     <div id="notifContent"></div>
 </div>
 
-<!-- PAGE 1: PROFILE ✅ 右邊版本樣式 + 體重記錄 + 線性圖 -->
+<!-- PAGE 1: PROFILE -->
 <div class="page active" id="page-profile">
     <div class="cat-tabs" id="catTabs"></div>
-
-    <!-- 輪廓卡片 -->
     <div class="card" id="profileCard">
         <div class="empty"><span>🐱</span><p>點擊 ➕ 添加您的貓咪</p></div>
     </div>
-
-    <!-- ✅ 體重記錄卡片 -->
     <div class="card" id="weightCard" style="display:none">
         <h2>⚖️ 體重記錄</h2>
         <div class="weight-row">
@@ -181,13 +192,10 @@
             <input type="number" id="weightInput" placeholder="kg" step="0.1" style="max-width:100px">
             <button class="btn-small" onclick="addWeight()">記錄</button>
         </div>
-        <!-- 線性圖 -->
         <div class="line-chart-container" id="lineChartContainer"></div>
-        <!-- 體重分析 -->
         <div id="weightAnalysis"></div>
         <div id="weightHistoryList" style="margin-top:10px"></div>
     </div>
-
     <div class="card" id="profileHospital" style="display:none">
         <h2>🏥 就診歷史</h2>
         <div id="profileHospitalList"></div>
@@ -403,7 +411,59 @@
     </div>
 </div>
 
-<!-- PAGE 7: SETTINGS -->
+<!-- ✅ PAGE 7: 支出 (NEW) -->
+<div class="page" id="page-expense">
+    <!-- 新增支出 -->
+    <div class="card">
+        <h2>💰 新增支出</h2>
+        <div class="form-group"><label>選擇貓咪</label><select id="expCat"></select></div>
+        <div class="form-group"><label>日期</label><input type="date" id="expDate"></div>
+        <div class="form-group">
+            <label>類別</label>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px" id="expCatBtns">
+                <div class="expense-category-btn selected" onclick="pickExpCat(this,'🍖 食品')">🍖 食品</div>
+                <div class="expense-category-btn" onclick="pickExpCat(this,'💊 醫療')">💊 醫療</div>
+                <div class="expense-category-btn" onclick="pickExpCat(this,'🎾 玩具')">🎾 玩具</div>
+                <div class="expense-category-btn" onclick="pickExpCat(this,'🏠 用品')">🏠 用品</div>
+                <div class="expense-category-btn" onclick="pickExpCat(this,'✂️ 美容')">✂️ 美容</div>
+                <div class="expense-category-btn" onclick="pickExpCat(this,'💉 疫苗')">💉 疫苗</div>
+                <div class="expense-category-btn" onclick="pickExpCat(this,'❓ 其他')">❓ 其他</div>
+            </div>
+        </div>
+        <div class="form-group"><label>品項名稱</label><input type="text" id="expName" placeholder="如：皇家貓糧、逗貓棒..."></div>
+        <div class="form-group"><label>金額 ($)</label><input type="number" id="expAmount" placeholder="0.00" step="0.01" min="0"></div>
+        <div class="form-group"><label>備註（選填）</label><input type="text" id="expNote" placeholder="品牌、數量、備注..."></div>
+        <button class="btn" onclick="saveExpense()" style="background:linear-gradient(135deg,#43a047,#66bb6a)">💰 儲存支出</button>
+    </div>
+
+    <!-- 統計概覽 -->
+    <div class="card">
+        <h2>📊 支出統計</h2>
+        <div class="analytics-period-row">
+            <div class="period-btn active" onclick="setExpensePeriod(30,this)">近30天</div>
+            <div class="period-btn" onclick="setExpensePeriod(90,this)">近3個月</div>
+            <div class="period-btn" onclick="setExpensePeriod(365,this)">近1年</div>
+            <div class="period-btn" onclick="setExpensePeriod(0,this)">全部</div>
+        </div>
+        <div id="expenseStats"></div>
+        <div id="expenseCatChart" style="margin-top:12px"></div>
+    </div>
+
+    <!-- 支出記錄 -->
+    <div class="card">
+        <h2>📋 支出記錄</h2>
+        <div class="tab-row">
+            <div class="tab-item active" onclick="showExpenseTab('all',this)">全部</div>
+            <div class="tab-item" onclick="showExpenseTab('🍖 食品',this)">🍖 食品</div>
+            <div class="tab-item" onclick="showExpenseTab('💊 醫療',this)">💊 醫療</div>
+            <div class="tab-item" onclick="showExpenseTab('🎾 玩具',this)">🎾 玩具</div>
+            <div class="tab-item" onclick="showExpenseTab('🏠 用品',this)">🏠 用品</div>
+        </div>
+        <div id="expenseList"></div>
+    </div>
+</div>
+
+<!-- PAGE 8: SETTINGS -->
 <div class="page" id="page-settings">
     <div class="card">
         <h2>🐱 管理貓咪</h2>
@@ -417,7 +477,7 @@
     </div>
 </div>
 
-<!-- BOTTOM NAV -->
+<!-- BOTTOM NAV ✅ 加入支出 -->
 <div class="bottom-nav">
     <button class="active" onclick="goPage('profile',this)"><span>📋</span>輪廓</button>
     <button onclick="goPage('daily',this)"><span>🍽️</span>日常</button>
@@ -425,10 +485,11 @@
     <button onclick="goPage('hospital',this)"><span>🏥</span>醫院</button>
     <button onclick="goPage('vaccine',this)"><span>💉</span>疫苗</button>
     <button onclick="goPage('diary',this)"><span>📔</span>日記</button>
+    <button onclick="goPage('expense',this)"><span>💰</span>支出</button>
     <button onclick="goPage('settings',this)"><span>⚙️</span>設定</button>
 </div>
 
-<!-- ADD/EDIT CAT PANEL ✅ 完整編輯 -->
+<!-- ADD/EDIT CAT PANEL -->
 <div class="overlay" id="overlay" onclick="closePanel()"></div>
 <div class="panel" id="panel">
     <div class="panel-top">
@@ -616,6 +677,32 @@
     <button class="btn" onclick="updateDiary()">✅ 更新日記</button>
 </div>
 
+<!-- ✅ 編輯支出 Panel -->
+<div class="overlay" id="overlayExp" onclick="closeEditExp()"></div>
+<div class="panel" id="panelExp">
+    <div class="panel-top">
+        <h2>✏️ 編輯支出</h2>
+        <button class="panel-close" onclick="closeEditExp()">✕</button>
+    </div>
+    <div class="form-group"><label>日期</label><input type="date" id="editExpDate"></div>
+    <div class="form-group">
+        <label>類別</label>
+        <select id="editExpCat" style="width:100%;padding:10px;border:2px solid #f0e0d6;border-radius:8px">
+            <option value="🍖 食品">🍖 食品</option>
+            <option value="💊 醫療">💊 醫療</option>
+            <option value="🎾 玩具">🎾 玩具</option>
+            <option value="🏠 用品">🏠 用品</option>
+            <option value="✂️ 美容">✂️ 美容</option>
+            <option value="💉 疫苗">💉 疫苗</option>
+            <option value="❓ 其他">❓ 其他</option>
+        </select>
+    </div>
+    <div class="form-group"><label>品項名稱</label><input type="text" id="editExpName" placeholder="品項名稱..."></div>
+    <div class="form-group"><label>金額 ($)</label><input type="number" id="editExpAmount" placeholder="0.00" step="0.01" min="0"></div>
+    <div class="form-group"><label>備註</label><input type="text" id="editExpNote" placeholder="備註..."></div>
+    <button class="btn" style="background:linear-gradient(135deg,#43a047,#66bb6a)" onclick="updateExp()">✅ 更新支出</button>
+</div>
+
 <script>
 // ✅ Firebase 配置
 var firebaseConfig = {
@@ -641,14 +728,20 @@ function showBar(msg, type) {
 // ============ DATA ============
 var data = JSON.parse(localStorage.getItem('cc3') || 'null') || {
     cats:[], toilet:[], hospital:[], diary:[],
-    food:[], vaccine:[], abnormal:[], ci:0
+    food:[], vaccine:[], abnormal:[], expense:[], ci:0
 };
+if(!data.expense) data.expense = [];
+
 var editingCatIndex=-1, editingFoodIndex=-1, editingToiletIndex=-1;
-var editingAbnIndex=-1, editingHospIndex=-1, editingVacIndex=-1, editingDiaryIndex=-1;
+var editingAbnIndex=-1, editingHospIndex=-1, editingVacIndex=-1;
+var editingDiaryIndex=-1, editingExpIndex=-1;
 var selectedOpts = { poopType:'normal', poopColor:'brown', peeSize:'normal', peeColor:'normal' };
 var editOpts = { poopType:'normal', poopColor:'brown', peeSize:'normal', peeColor:'normal' };
 var dailyTabFilter = 'all';
 var analyticsDays = 7;
+var expenseTabFilter = 'all';
+var expensePeriodDays = 30;
+var selectedExpCat = '🍖 食品';
 
 function save() {
     localStorage.setItem('cc3', JSON.stringify(data));
@@ -662,7 +755,7 @@ function save() {
 }
 
 function ensureIds() {
-    var keys=['food','toilet','abnormal','hospital','vaccine','diary'];
+    var keys=['food','toilet','abnormal','hospital','vaccine','diary','expense'];
     for(var k=0;k<keys.length;k++){
         if(data[keys[k]]){
             for(var i=0;i<data[keys[k]].length;i++){
@@ -685,6 +778,7 @@ function goPage(name, btn) {
     if(name==='hospital') showHospList();
     if(name==='vaccine') showVaccineList();
     if(name==='diary') showDiaryList();
+    if(name==='expense') { showExpenseList(); renderExpenseStats(); }
     if(name==='settings') showSettings();
 }
 
@@ -747,17 +841,14 @@ function saveCat() {
             c.gender=document.getElementById('catGender').value;
             c.color=document.getElementById('catColor').value;
             if(photo) c.photo=photo;
-            ['toilet','hospital','food','abnormal','vaccine'].forEach(function(k){
+            ['toilet','hospital','food','abnormal','vaccine','expense'].forEach(function(k){
                 for(var i=0;i<data[k].length;i++){if(data[k][i].catId===c.id) data[k][i].catName=name;}
             });
             save(); closePanel(); showProfile(); alert('✅ '+name+' 已更新！');
         } else {
-            data.cats.push({id:Date.now(),name:name,
-                bday:document.getElementById('catBday').value,
-                adopt:document.getElementById('catAdopt').value,
-                breed:document.getElementById('catBreed').value,
-                gender:document.getElementById('catGender').value,
-                color:document.getElementById('catColor').value,
+            data.cats.push({id:Date.now(),name:name,bday:document.getElementById('catBday').value,
+                adopt:document.getElementById('catAdopt').value,breed:document.getElementById('catBreed').value,
+                gender:document.getElementById('catGender').value,color:document.getElementById('catColor').value,
                 photo:photo||'',weights:[]});
             data.ci=data.cats.length-1;
             save(); closePanel(); showProfile(); alert('🐱 '+name+' 已添加！');
@@ -770,7 +861,7 @@ function saveCat() {
     } else { doSave(editingCatIndex>=0?null:''); }
 }
 
-// ============ PROFILE ✅ 右邊版本樣式 ============
+// ============ PROFILE ============
 function showProfile() {
     var tabs=document.getElementById('catTabs'),card=document.getElementById('profileCard');
     tabs.innerHTML='';
@@ -793,40 +884,28 @@ function showProfile() {
     var age=c.bday?getAge(c.bday):'未登記';
     var adoptDays=c.adopt?getAdoptDays(c.adopt):'';
     var lastW=c.weights&&c.weights.length>0?c.weights[c.weights.length-1].v+' kg':'未記錄';
-
-    // ✅ 右邊版本樣式：照片置中 + 名字 + 編輯資料按鈕 + 資料列
     var photoHTML=c.photo?
         '<img class="profile-photo" src="'+c.photo+'" onclick="openEditPanel('+data.ci+')" style="cursor:pointer" title="點擊編輯">':
         '<div class="profile-photo-placeholder" onclick="openEditPanel('+data.ci+')" title="點擊編輯">🐱</div>';
-
     card.innerHTML=
         '<div class="profile-photo-wrap">'+photoHTML+'</div>'+
         '<div class="profile-name">'+c.name+'</div>'+
-        '<div class="profile-edit-btn-area">'+
-            '<button class="profile-edit-btn" onclick="openEditPanel('+data.ci+')">✏️ 編輯資料</button>'+
-        '</div>'+
+        '<div class="profile-edit-btn-area"><button class="profile-edit-btn" onclick="openEditPanel('+data.ci+')">✏️ 編輯資料</button></div>'+
         '<div class="info-row"><span class="label">🎂 生日</span><span class="value">'+(c.bday||'未登記')+'</span></div>'+
         '<div class="info-row"><span class="label">🏠 收養日</span><span class="value">'+(c.adopt||'未登記')+'</span></div>'+
         '<div class="info-row"><span class="label">🐾 品種</span><span class="value">'+(c.breed||'未登記')+'</span></div>'+
         '<div class="info-row"><span class="label">⚧ 性別</span><span class="value">'+(c.gender==='female'?'♀ 母':'♂ 公')+'</span></div>'+
         '<div class="info-row"><span class="label">🎨 毛色</span><span class="value">'+(c.color||'未登記')+'</span></div>'+
         '<div class="info-row"><span class="label">⚖️ 體重</span><span class="value">'+lastW+'</span></div>';
-
-    // 體重記錄 + 線性圖
     document.getElementById('weightCard').style.display='block';
-    drawLineChart();
-    renderWeightAnalysis();
-    showWeightHistory();
-    showProfileHospital();
-    checkVaccineNotif();
+    drawLineChart(); renderWeightAnalysis(); showWeightHistory(); showProfileHospital(); checkVaccineNotif();
 }
-
 function getAge(bday){var b=new Date(bday),n=new Date();var y=n.getFullYear()-b.getFullYear(),m=n.getMonth()-b.getMonth();if(m<0){y--;m+=12;}return y>0?y+'歲'+m+'個月':m+'個月';}
 function getAdoptDays(d){var diff=Math.floor((new Date()-new Date(d))/86400000);if(diff<0)return '';if(diff<30)return diff+'天';if(diff<365)return Math.floor(diff/30)+'個月'+diff%30+'天';return Math.floor(diff/365)+'年'+Math.floor((diff%365)/30)+'個月';}
 
-// ============ WEIGHT + LINE CHART + ANALYSIS ============
+// ============ WEIGHT ============
 function addWeight(){
-    if(data.cats.length===0)return;
+    if(!data.cats.length)return;
     var v=parseFloat(document.getElementById('weightInput').value);
     if(!v||v<=0){alert('請輸入體重！');return;}
     var dateVal=document.getElementById('weightDate').value||new Date().toISOString().split('T')[0];
@@ -840,19 +919,12 @@ function addWeight(){
 }
 function deleteWeight(i){if(confirm('刪除？')){data.cats[data.ci].weights.splice(i,1);save();showProfile();}}
 
-// ✅ 線性圖
 function drawLineChart(){
     var container=document.getElementById('lineChartContainer');container.innerHTML='';
     var c=data.cats[data.ci];
-    if(!c||!c.weights||!c.weights.length){
-        container.innerHTML='<p style="text-align:center;color:#ccc;padding:16px;font-size:13px">還沒有體重記錄</p>';
-        return;
-    }
+    if(!c||!c.weights||!c.weights.length){container.innerHTML='<p style="text-align:center;color:#ccc;padding:16px;font-size:13px">還沒有體重記錄</p>';return;}
     var ws=c.weights.slice(-12);
-    if(ws.length<2){
-        container.innerHTML='<div style="text-align:center;padding:20px;color:#ff6b9d;font-size:26px;font-weight:bold">'+ws[0].v+' kg</div><div style="text-align:center;color:#999">'+ws[0].d+'</div>';
-        return;
-    }
+    if(ws.length<2){container.innerHTML='<div style="text-align:center;padding:20px;color:#ff6b9d;font-size:26px;font-weight:bold">'+ws[0].v+' kg</div><div style="text-align:center;color:#999">'+ws[0].d+'</div>';return;}
     var pad={top:22,right:22,bottom:42,left:46},totalW=Math.max(ws.length*62,300);
     var svgW=totalW+pad.left+pad.right,svgH=200,chartH=svgH-pad.top-pad.bottom;
     var vals=ws.map(function(w){return w.v;});
@@ -872,28 +944,27 @@ function drawLineChart(){
     container.innerHTML=svg;
 }
 
-// ✅ 體重分析
 function renderWeightAnalysis(){
     var el=document.getElementById('weightAnalysis');el.innerHTML='';
     var c=data.cats[data.ci];
     if(!c||!c.weights||c.weights.length<2) return;
     var ws=c.weights;
-    var latest=ws[ws.length-1].v;
-    var prev=ws[ws.length-2].v;
+    var latest=ws[ws.length-1].v,prev=ws[ws.length-2].v;
     var diff=(latest-prev).toFixed(2);
     var max=Math.max.apply(null,ws.map(function(w){return w.v;}));
     var min=Math.min.apply(null,ws.map(function(w){return w.v;}));
     var avg=(ws.reduce(function(s,w){return s+w.v;},0)/ws.length).toFixed(2);
     var trendClass=diff>0?'up':diff<0?'down':'same';
     var trendText=diff>0?'↑ 體重增加 +'+diff+' kg':diff<0?'↓ 體重減少 '+diff+' kg':'→ 體重不變';
-    el.innerHTML='<div class="weight-analysis-card">'+
-        '<div class="weight-stat-row">'+
-        '<div class="weight-stat"><div class="weight-stat-val">'+latest+' kg</div><div class="weight-stat-lbl">最新體重</div></div>'+
-        '<div class="weight-stat"><div class="weight-stat-val">'+avg+' kg</div><div class="weight-stat-lbl">平均體重</div></div>'+
-        '<div class="weight-stat"><div class="weight-stat-val">'+max+' kg</div><div class="weight-stat-lbl">最高體重</div></div>'+
-        '<div class="weight-stat"><div class="weight-stat-val">'+min+' kg</div><div class="weight-stat-lbl">最低體重</div></div>'+
+    el.innerHTML='<div style="background:linear-gradient(135deg,#f8f0ff,#ede7f6);border-radius:12px;padding:14px;margin:10px 0;border:1.5px solid #ce93d8">'+
+        '<div style="display:flex;justify-content:space-around;margin-bottom:8px">'+
+        '<div style="text-align:center"><div style="font-size:18px;font-weight:bold;color:#9c27b0">'+latest+' kg</div><div style="font-size:11px;color:#999">最新</div></div>'+
+        '<div style="text-align:center"><div style="font-size:18px;font-weight:bold;color:#9c27b0">'+avg+' kg</div><div style="font-size:11px;color:#999">平均</div></div>'+
+        '<div style="text-align:center"><div style="font-size:18px;font-weight:bold;color:#9c27b0">'+max+' kg</div><div style="font-size:11px;color:#999">最高</div></div>'+
+        '<div style="text-align:center"><div style="font-size:18px;font-weight:bold;color:#9c27b0">'+min+' kg</div><div style="font-size:11px;color:#999">最低</div></div>'+
         '</div>'+
-        '<div class="weight-trend '+trendClass+'">'+trendText+'</div>'+
+        '<div style="font-size:13px;padding:6px 10px;border-radius:8px;text-align:center;'+
+        (trendClass==='up'?'background:#fff0f0;color:#f44336':trendClass==='down'?'background:#f0fff4;color:#4caf50':'background:#f5f5f5;color:#999')+'">'+trendText+'</div>'+
         '</div>';
 }
 
@@ -906,10 +977,8 @@ function showWeightHistory(){
         html+='<div class="weight-history-item"><span class="w-date">'+(w.fullDate||w.d)+'</span><span class="w-val">'+w.v+' kg'+diff+'</span><button class="w-del" onclick="deleteWeight('+i+')">✕</button></div>';}
     el.innerHTML=html;
 }
-
 function showProfileHospital(){
-    var c=data.cats[data.ci];
-    if(!c){return;}
+    var c=data.cats[data.ci];if(!c)return;
     var records=data.hospital.filter(function(r){return r.catId===c.id;});
     var el=document.getElementById('profileHospital');
     if(!records.length){el.style.display='none';return;}
@@ -1025,14 +1094,172 @@ function updateDiary(){if(editingDiaryIndex<0)return;var d=data.diary[editingDia
 function deleteDiary(id){if(!confirm('確定刪除？'))return;data.diary=data.diary.filter(function(d){return d.id!==id;});save();showDiaryList();}
 function showDiaryList(){var el=document.getElementById('diaryList');if(!data.diary.length){el.innerHTML='<div class="empty"><span>📔</span><p>還沒有日記</p></div>';return;}el.innerHTML=data.diary.slice().reverse().map(function(d){var photos=d.photos&&d.photos.length?'<div class="diary-photos">'+d.photos.map(function(p){return'<img src="'+p+'">';}).join('')+'</div>':'';return'<div style="margin-bottom:15px;padding-bottom:15px;border-bottom:2px dashed #f0e0d6"><div style="color:#ff6b9d;font-weight:bold;margin-bottom:5px">📅 '+d.date+'</div>'+photos+'<div style="line-height:1.6">'+d.text+'</div><div class="record-actions"><button class="btn-edit" onclick="openEditDiary('+d.id+')">✏️ 編輯</button><button class="btn-del" onclick="deleteDiary('+d.id+')">🗑️ 刪除</button></div></div>';}).join('');}
 
+// ============ ✅ 支出 EXPENSE ============
+function pickExpCat(el, cat) {
+    selectedExpCat = cat;
+    document.querySelectorAll('#expCatBtns .expense-category-btn').forEach(function(b){b.classList.remove('selected');});
+    el.classList.add('selected');
+}
+
+function saveExpense() {
+    if(!data.cats.length){alert('請先添加貓咪！');return;}
+    var c=data.cats[document.getElementById('expCat').value];
+    var name=document.getElementById('expName').value.trim();
+    var amount=parseFloat(document.getElementById('expAmount').value);
+    var date=document.getElementById('expDate').value||new Date().toISOString().split('T')[0];
+    if(!name){alert('請輸入品項名稱！');return;}
+    if(!amount||amount<=0){alert('請輸入有效金額！');return;}
+    data.expense.push({
+        id:Date.now(),catId:c.id,catName:c.name,
+        date:date,category:selectedExpCat,name:name,
+        amount:amount,note:document.getElementById('expNote').value
+    });
+    save();
+    document.getElementById('expName').value='';
+    document.getElementById('expAmount').value='';
+    document.getElementById('expNote').value='';
+    showExpenseList(); renderExpenseStats();
+    alert('✅ 支出已記錄！');
+}
+
+function openEditExp(id){
+    editingExpIndex=-1;
+    for(var i=0;i<data.expense.length;i++){if(data.expense[i].id===id){editingExpIndex=i;break;}}
+    if(editingExpIndex<0)return;
+    var e=data.expense[editingExpIndex];
+    document.getElementById('editExpDate').value=e.date||'';
+    document.getElementById('editExpCat').value=e.category||'🍖 食品';
+    document.getElementById('editExpName').value=e.name||'';
+    document.getElementById('editExpAmount').value=e.amount||'';
+    document.getElementById('editExpNote').value=e.note||'';
+    document.getElementById('overlayExp').classList.add('show');
+    document.getElementById('panelExp').classList.add('show');
+}
+function closeEditExp(){document.getElementById('overlayExp').classList.remove('show');document.getElementById('panelExp').classList.remove('show');editingExpIndex=-1;}
+function updateExp(){
+    if(editingExpIndex<0)return;
+    var e=data.expense[editingExpIndex];
+    var amount=parseFloat(document.getElementById('editExpAmount').value);
+    if(!document.getElementById('editExpName').value.trim()){alert('請輸入品項名稱！');return;}
+    if(!amount||amount<=0){alert('請輸入有效金額！');return;}
+    e.date=document.getElementById('editExpDate').value;
+    e.category=document.getElementById('editExpCat').value;
+    e.name=document.getElementById('editExpName').value.trim();
+    e.amount=amount;
+    e.note=document.getElementById('editExpNote').value;
+    save();closeEditExp();showExpenseList();renderExpenseStats();alert('✅ 支出已更新！');
+}
+function deleteExp(id){
+    if(!confirm('確定刪除此支出記錄？'))return;
+    data.expense=data.expense.filter(function(e){return e.id!==id;});
+    save();showExpenseList();renderExpenseStats();
+}
+
+function setExpensePeriod(days,el){
+    expensePeriodDays=days;
+    document.querySelectorAll('#page-expense .period-btn').forEach(function(b){b.classList.remove('active');});
+    if(el) el.classList.add('active');
+    renderExpenseStats();
+}
+
+function showExpenseTab(tab,el){
+    expenseTabFilter=tab;
+    document.querySelectorAll('#page-expense .tab-item').forEach(function(b){b.classList.remove('active');});
+    if(el) el.classList.add('active');
+    showExpenseList();
+}
+
+function getFilteredExpenses(){
+    var cutoff=expensePeriodDays>0?Date.now()-expensePeriodDays*86400000:0;
+    return data.expense.filter(function(e){return expensePeriodDays===0||new Date(e.date).getTime()>=cutoff;});
+}
+
+function renderExpenseStats(){
+    var filtered=getFilteredExpenses();
+    var total=filtered.reduce(function(s,e){return s+e.amount;},0);
+    var catTotals={};
+    filtered.forEach(function(e){catTotals[e.category]=(catTotals[e.category]||0)+e.amount;});
+    var maxCat=Math.max.apply(null,Object.values(catTotals).concat([1]));
+
+    var catColors={
+        '🍖 食品':'#ff8a65','💊 醫療':'#ef5350','🎾 玩具':'#7e57c2',
+        '🏠 用品':'#42a5f5','✂️ 美容':'#ec407a','💉 疫苗':'#26a69a','❓ 其他':'#8d6e63'
+    };
+
+    // 統計卡片
+    var statsHtml='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">'+
+        '<div class="expense-stat-card"><div class="expense-stat-amount">$'+total.toFixed(2)+'</div><div class="expense-stat-label">總支出</div></div>'+
+        '<div class="expense-stat-card"><div class="expense-stat-amount">'+filtered.length+'</div><div class="expense-stat-label">支出筆數</div></div>'+
+        '</div>';
+    document.getElementById('expenseStats').innerHTML=statsHtml;
+
+    // 類別分析圖
+    var chartHtml='<div style="margin-top:4px">';
+    var sortedCats=Object.keys(catTotals).sort(function(a,b){return catTotals[b]-catTotals[a];});
+    sortedCats.forEach(function(cat){
+        var pct=maxCat>0?Math.round((catTotals[cat]/maxCat)*100):0;
+        var color=catColors[cat]||'#ff6b9d';
+        chartHtml+='<div class="expense-chart-bar">'+
+            '<span class="expense-chart-label">'+cat+'</span>'+
+            '<div class="expense-chart-track"><div class="expense-chart-fill" style="width:'+pct+'%;background:'+color+'"></div></div>'+
+            '<span class="expense-chart-num">$'+catTotals[cat].toFixed(2)+'</span>'+
+            '</div>';
+    });
+    chartHtml+='</div>';
+    document.getElementById('expenseCatChart').innerHTML=sortedCats.length?chartHtml:'<p style="color:#ccc;text-align:center;padding:10px;font-size:13px">暫無支出數據</p>';
+}
+
+function showExpenseList(){
+    var container=document.getElementById('expenseList');
+    var filtered=expenseTabFilter==='all'?data.expense:data.expense.filter(function(e){return e.category===expenseTabFilter;});
+    filtered=filtered.slice().sort(function(a,b){return new Date(b.date)-new Date(a.date);});
+
+    if(!filtered.length){
+        container.innerHTML='<div class="empty"><span>💰</span><p>還沒有支出記錄</p></div>';
+        return;
+    }
+
+    var catColors={
+        '🍖 食品':'#fff3e0','💊 醫療':'#ffebee','🎾 玩具':'#ede7f6',
+        '🏠 用品':'#e3f2fd','✂️ 美容':'#fce4ec','💉 疫苗':'#e0f2f1','❓ 其他':'#efebe9'
+    };
+    var catTextColors={
+        '🍖 食品':'#e65100','💊 醫療':'#c62828','🎾 玩具':'#4a148c',
+        '🏠 用品':'#0d47a1','✂️ 美容':'#880e4f','💉 疫苗':'#004d40','❓ 其他':'#3e2723'
+    };
+
+    container.innerHTML=filtered.map(function(e){
+        var bg=catColors[e.category]||'#f5f5f5';
+        var tc=catTextColors[e.category]||'#333';
+        return'<div class="expense-item">'+
+            '<div class="expense-item-left">'+
+            '<div class="expense-item-title">'+e.name+'</div>'+
+            '<div class="expense-item-meta">📅 '+e.date+'　🐱 '+e.catName+'</div>'+
+            (e.note?'<div class="expense-item-note">📝 '+e.note+'</div>':'')+
+            '<span class="expense-cat-tag" style="background:'+bg+';color:'+tc+'">'+e.category+'</span>'+
+            '</div>'+
+            '<div class="expense-item-right">'+
+            '<div class="expense-amount">$'+parseFloat(e.amount).toFixed(2)+'</div>'+
+            '<div class="record-actions" style="justify-content:flex-end;margin-top:6px">'+
+            '<button class="btn-edit" onclick="openEditExp('+e.id+')">✏️</button>'+
+            '<button class="btn-del" onclick="deleteExp('+e.id+')">🗑️</button>'+
+            '</div></div></div>';
+    }).join('');
+}
+
 // ============ SETTINGS ============
 function showSettings(){var el=document.getElementById('manageCats');el.innerHTML=data.cats.length?data.cats.map(function(c,i){return'<div class="settings-row"><span>🐱 '+c.name+'</span><div><button class="btn-edit" onclick="openEditPanel('+i+')" style="margin-right:5px">✏️</button><button class="btn-small" style="background:#ff4444;font-size:12px" onclick="deleteCat('+i+')">🗑️</button></div></div>';}).join(''):'<div class="empty"><span>🐱</span><p>還沒有貓咪</p></div>';}
-function deleteCat(i){if(confirm('確定刪除 '+data.cats[i].name+'？')){var id=data.cats[i].id;data.cats.splice(i,1);['toilet','hospital','food','vaccine','abnormal'].forEach(function(k){data[k]=data[k].filter(function(r){return r.catId!==id;});});data.ci=0;save();showProfile();showSettings();}}
+function deleteCat(i){if(confirm('確定刪除 '+data.cats[i].name+'？')){var id=data.cats[i].id;data.cats.splice(i,1);['toilet','hospital','food','vaccine','abnormal','expense'].forEach(function(k){data[k]=data[k].filter(function(r){return r.catId!==id;});});data.ci=0;save();showProfile();showSettings();}}
 function exportAll(){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));a.download='cat-care-backup.json';a.click();}
 function clearAll(){if(confirm('⚠️ 確定清除所有資料？無法復原！')){localStorage.removeItem('cc3');db.ref('catcare').remove();location.reload();}}
 
 // ============ HELPERS ============
-function fillSelects(){['toiletCat','hospCat','foodCat','vacCat','abnCat'].forEach(function(id){var sel=document.getElementById(id);if(!sel)return;sel.innerHTML=data.cats.map(function(c,i){return'<option value="'+i+'">🐱 '+c.name+'</option>';}).join('');});}
+function fillSelects(){
+    ['toiletCat','hospCat','foodCat','vacCat','abnCat','expCat'].forEach(function(id){
+        var sel=document.getElementById(id);if(!sel)return;
+        sel.innerHTML=data.cats.map(function(c,i){return'<option value="'+i+'">🐱 '+c.name+'</option>';}).join('');
+    });
+}
 function setToiletDateTime(){var n=new Date();document.getElementById('toiletDate').value=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0')+'T'+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');}
 
 // ✅ INIT
@@ -1040,7 +1267,7 @@ function init(){
     var today=new Date().toISOString().split('T')[0];
     var n=new Date();
     var dtLocal=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0')+'T'+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
-    ['hospDate','diaryDate','weightDate','foodDate','vacDate'].forEach(function(id){document.getElementById(id).value=today;});
+    ['hospDate','diaryDate','weightDate','foodDate','vacDate','expDate'].forEach(function(id){var el=document.getElementById(id);if(el)el.value=today;});
     document.getElementById('toiletDate').value=dtLocal;
     document.getElementById('abnDate').value=dtLocal;
     showBar('🔄 連線中...','loading');
@@ -1049,8 +1276,7 @@ function init(){
             data=snapshot.val();
             data.cats=data.cats||[];data.toilet=data.toilet||[];data.hospital=data.hospital||[];
             data.diary=data.diary||[];data.food=data.food||[];data.vaccine=data.vaccine||[];
-            data.abnormal=data.abnormal||[];data.ci=data.ci||0;
-            // 確保每個貓咪有 weights 陣列
+            data.abnormal=data.abnormal||[];data.expense=data.expense||[];data.ci=data.ci||0;
             data.cats.forEach(function(c){if(!c.weights)c.weights=[];});
             localStorage.setItem('cc3',JSON.stringify(data));
         }
