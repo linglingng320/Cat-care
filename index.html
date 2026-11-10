@@ -36,7 +36,13 @@
         .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
         .info-row .label { color: #999; font-weight: bold; }
         .info-row .value { color: #333; }
-        .profile-photo { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #ff6b9d; display: block; margin: 0 auto 10px; }
+        /* ✅ 輪廓頁面 - 每個 info-row 加 edit 圖示 */
+        .info-row-editable { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
+        .info-row-editable .label { color: #999; font-weight: bold; min-width: 80px; }
+        .info-row-editable .value { color: #333; flex: 1; }
+        .inline-edit-input { flex: 1; padding: 5px 8px; border: 1.5px solid #ff6b9d; border-radius: 6px; font-size: 14px; margin: 0 8px; }
+        .inline-save-btn { padding: 4px 10px; background: #ff6b9d; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; }
+        .profile-photo { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #ff6b9d; display: block; margin: 0 auto 10px; cursor: pointer; }
         .profile-name { text-align: center; font-size: 24px; font-weight: bold; color: #333; }
         .profile-age { text-align: center; color: #ff6b9d; margin-bottom: 5px; }
         .edit-btn-area { text-align: center; margin-bottom: 15px; }
@@ -96,6 +102,33 @@
         .tab-row { display: flex; gap: 6px; margin-bottom: 15px; overflow-x: auto; }
         .tab-item { padding: 6px 14px; border-radius: 20px; border: 2px solid #f0e0d6; background: white; cursor: pointer; font-size: 13px; white-space: nowrap; }
         .tab-item.active { background: #ff6b9d; color: white; border-color: #ff6b9d; }
+        .analytics-period-row { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+        .period-btn { padding: 5px 13px; border-radius: 14px; border: 1.5px solid #f0e0d6; background: white; cursor: pointer; font-size: 12px; color: #aaa; }
+        .period-btn.active { background: #ff6b9d; color: white; border-color: #ff6b9d; }
+        .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+        .analytics-stat { background: linear-gradient(135deg,#fff0f5,#fde8ee); border-radius: 12px; padding: 14px 10px; text-align: center; border: 1.5px solid #f5d0de; }
+        .analytics-stat.blue { background: linear-gradient(135deg,#e8f4fd,#dbeeff); border-color: #b8d8f5; }
+        .analytics-stat.green { background: linear-gradient(135deg,#e8fdf0,#d4f5e2); border-color: #a8e6c0; }
+        .analytics-stat.orange { background: linear-gradient(135deg,#fff8e8,#fdefd4); border-color: #f5d8a0; }
+        .analytics-stat-icon { font-size: 22px; margin-bottom: 4px; }
+        .analytics-stat-label { font-size: 11px; color: #999; margin-bottom: 3px; }
+        .analytics-stat-value { font-size: 20px; font-weight: bold; color: #ff6b9d; }
+        .analytics-stat.blue .analytics-stat-value { color: #2196f3; }
+        .analytics-stat.green .analytics-stat-value { color: #43a047; }
+        .analytics-stat.orange .analytics-stat-value { color: #fb8c00; }
+        .analytics-section { margin-bottom: 14px; }
+        .analytics-section-title { font-size: 13px; font-weight: bold; color: #aaa; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #f5e8e8; }
+        .bar-row { display: flex; align-items: center; margin-bottom: 7px; gap: 8px; }
+        .bar-label { font-size: 12px; color: #888; min-width: 56px; text-align: right; }
+        .bar-track { flex: 1; background: #f5ebe8; border-radius: 6px; height: 13px; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg,#ff6b9d,#ff8a65); transition: width 0.4s; }
+        .bar-fill.blue { background: linear-gradient(90deg,#42a5f5,#26c6da); }
+        .bar-fill.green { background: linear-gradient(90deg,#66bb6a,#26a69a); }
+        .bar-fill.orange { background: linear-gradient(90deg,#ffa726,#ff7043); }
+        .bar-num { font-size: 12px; color: #bbb; min-width: 32px; }
+        .analytics-tip { background: #fff8e1; border-left: 3px solid #ffc107; border-radius: 0 8px 8px 0; padding: 8px 12px; font-size: 13px; color: #856404; margin-top: 6px; }
+        .analytics-tip.red { background: #fff0f0; border-color: #ff4444; color: #c62828; }
+        .analytics-tip.green { background: #f0fff4; border-color: #4caf50; color: #2e7d32; }
     </style>
 </head>
 <body>
@@ -213,6 +246,26 @@
             <div class="tab-item" onclick="showDailyTab('toilet',this)">🚽 排泄</div>
         </div>
         <div id="dailyList"></div>
+    </div>
+    <div class="card">
+        <h2>📊 數據分析</h2>
+        <div class="analytics-period-row">
+            <div class="period-btn active" onclick="setAnalyticsPeriod(7,this)">近7天</div>
+            <div class="period-btn" onclick="setAnalyticsPeriod(14,this)">近14天</div>
+            <div class="period-btn" onclick="setAnalyticsPeriod(30,this)">近30天</div>
+            <div class="period-btn" onclick="setAnalyticsPeriod(0,this)">全部</div>
+        </div>
+        <div class="analytics-grid" id="analyticsOverview"></div>
+        <div class="analytics-section">
+            <div class="analytics-section-title">🍽️ 飲食統計</div>
+            <div id="analyticsFoodBars"></div>
+            <div id="analyticsFoodTip"></div>
+        </div>
+        <div class="analytics-section">
+            <div class="analytics-section-title">🚽 排泄統計</div>
+            <div id="analyticsToiletBars"></div>
+            <div id="analyticsToiletTips"></div>
+        </div>
     </div>
 </div>
 
@@ -373,7 +426,7 @@
     <button class="btn" id="panelSaveBtn" onclick="saveCat()">✅ 儲存</button>
 </div>
 
-<!-- ✅ 編輯飲食 Panel -->
+<!-- 編輯飲食 Panel -->
 <div class="overlay" id="overlayFood" onclick="closeEditFood()"></div>
 <div class="panel" id="panelFood">
     <div class="panel-top">
@@ -388,7 +441,7 @@
     <button class="btn" onclick="updateFood()">✅ 更新記錄</button>
 </div>
 
-<!-- ✅ 編輯排泄 Panel -->
+<!-- 編輯排泄 Panel -->
 <div class="overlay" id="overlayToilet" onclick="closeEditToilet()"></div>
 <div class="panel" id="panelToilet">
     <div class="panel-top">
@@ -452,7 +505,7 @@
     <button class="btn" onclick="updateToilet()">✅ 更新記錄</button>
 </div>
 
-<!-- ✅ 編輯異常記錄 Panel -->
+<!-- 編輯異常記錄 Panel -->
 <div class="overlay" id="overlayAbn" onclick="closeEditAbn()"></div>
 <div class="panel" id="panelAbn">
     <div class="panel-top">
@@ -484,7 +537,7 @@
     <button class="btn" style="background:linear-gradient(135deg,#ff4444,#ff6b6b)" onclick="updateAbn()">✅ 更新異常記錄</button>
 </div>
 
-<!-- ✅ 編輯就診記錄 Panel -->
+<!-- 編輯就診記錄 Panel -->
 <div class="overlay" id="overlayHosp" onclick="closeEditHosp()"></div>
 <div class="panel" id="panelHosp">
     <div class="panel-top">
@@ -499,7 +552,7 @@
     <button class="btn" onclick="updateHosp()">✅ 更新就診記錄</button>
 </div>
 
-<!-- ✅ 編輯疫苗記錄 Panel -->
+<!-- 編輯疫苗記錄 Panel -->
 <div class="overlay" id="overlayVac" onclick="closeEditVac()"></div>
 <div class="panel" id="panelVac">
     <div class="panel-top">
@@ -523,7 +576,7 @@
     <button class="btn btn-green" onclick="updateVac()">✅ 更新疫苗記錄</button>
 </div>
 
-<!-- ✅ 編輯日記 Panel -->
+<!-- 編輯日記 Panel -->
 <div class="overlay" id="overlayDiary" onclick="closeEditDiary()"></div>
 <div class="panel" id="panelDiary">
     <div class="panel-top">
@@ -546,15 +599,16 @@ var editingAbnIndex=-1, editingHospIndex=-1, editingVacIndex=-1, editingDiaryInd
 var selectedOpts = { poopType:'normal', poopColor:'brown', peeSize:'normal', peeColor:'normal' };
 var editOpts = { poopType:'normal', poopColor:'brown', peeSize:'normal', peeColor:'normal' };
 var dailyTabFilter = 'all';
+var analyticsDays = 7;
 
 function save() { localStorage.setItem('cc3', JSON.stringify(data)); }
 
 function ensureIds() {
-    var keys = ['food','toilet','abnormal','hospital','vaccine','diary'];
-    for (var k=0;k<keys.length;k++) {
-        if (data[keys[k]]) {
-            for (var i=0;i<data[keys[k]].length;i++) {
-                if (!data[keys[k]][i].id) data[keys[k]][i].id = Date.now() + Math.floor(Math.random()*100000);
+    var keys=['food','toilet','abnormal','hospital','vaccine','diary'];
+    for(var k=0;k<keys.length;k++){
+        if(data[keys[k]]){
+            for(var i=0;i<data[keys[k]].length;i++){
+                if(!data[keys[k]][i].id) data[keys[k]][i].id=Date.now()+Math.floor(Math.random()*100000);
             }
         }
     }
@@ -565,24 +619,24 @@ function goPage(name, btn) {
     document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
     document.getElementById('page-'+name).classList.add('active');
     document.querySelectorAll('.bottom-nav button').forEach(function(b){b.classList.remove('active');});
-    if (btn) btn.classList.add('active');
+    if(btn) btn.classList.add('active');
     fillSelects();
-    if (name==='profile') showProfile();
-    if (name==='daily') showDailyList();
-    if (name==='abnormal') showAbnList();
-    if (name==='hospital') showHospList();
-    if (name==='vaccine') showVaccineList();
-    if (name==='diary') showDiaryList();
-    if (name==='settings') showSettings();
+    if(name==='profile') showProfile();
+    if(name==='daily') { showDailyList(); renderAnalytics(); }
+    if(name==='abnormal') showAbnList();
+    if(name==='hospital') showHospList();
+    if(name==='vaccine') showVaccineList();
+    if(name==='diary') showDiaryList();
+    if(name==='settings') showSettings();
 }
 
 function pickOpt(key, val, el) {
-    selectedOpts[key] = val;
+    selectedOpts[key]=val;
     el.parentElement.querySelectorAll('.size-btn').forEach(function(b){b.classList.remove('selected');});
     el.classList.add('selected');
 }
 function pickEditOpt(key, val, el) {
-    editOpts[key] = val;
+    editOpts[key]=val;
     el.parentElement.querySelectorAll('.size-btn').forEach(function(b){b.classList.remove('selected');});
     el.classList.add('selected');
 }
@@ -624,17 +678,17 @@ function closePanel() {
 }
 function saveCat() {
     var name=document.getElementById('catName').value.trim();
-    if (!name){alert('請輸入名字！');return;}
+    if(!name){alert('請輸入名字！');return;}
     var fileInput=document.getElementById('catPhoto');
     var doSave=function(photo){
-        if (editingCatIndex>=0) {
+        if(editingCatIndex>=0){
             var c=data.cats[editingCatIndex];
             c.name=name; c.bday=document.getElementById('catBday').value;
             c.adopt=document.getElementById('catAdopt').value;
             c.breed=document.getElementById('catBreed').value;
             c.gender=document.getElementById('catGender').value;
             c.color=document.getElementById('catColor').value;
-            if (photo) c.photo=photo;
+            if(photo) c.photo=photo;
             ['toilet','hospital','food','abnormal','vaccine'].forEach(function(k){
                 for(var i=0;i<data[k].length;i++){if(data[k][i].catId===c.id) data[k][i].catName=name;}
             });
@@ -648,51 +702,141 @@ function saveCat() {
             save(); closePanel(); showProfile(); alert('🐱 '+name+' 已添加！');
         }
     };
-    if (fileInput.files&&fileInput.files[0]) {
+    if(fileInput.files&&fileInput.files[0]){
         var reader=new FileReader();
         reader.onload=function(e){doSave(e.target.result);};
         reader.readAsDataURL(fileInput.files[0]);
     } else { doSave(editingCatIndex>=0?null:''); }
 }
 
-// ============ PROFILE ============
+// ============ PROFILE ✅（含內聯編輯）============
 function showProfile() {
     var tabs=document.getElementById('catTabs'),card=document.getElementById('profileCard');
     tabs.innerHTML='';
-    if (data.cats.length===0) {
+    if(data.cats.length===0){
         card.innerHTML='<div class="empty"><span>🐱</span><p>點擊 ➕ 添加您的貓咪</p></div>';
         document.getElementById('weightCard').style.display='none';
         document.getElementById('profileHospital').style.display='none';
         return;
     }
-    for (var i=0;i<data.cats.length;i++) {
+    if(data.ci>=data.cats.length) data.ci=0;
+    data.cats.forEach(function(cat,i){
         var t=document.createElement('div');
         t.className='cat-tab'+(i===data.ci?' active':'');
-        t.textContent='🐱 '+data.cats[i].name;
+        t.textContent='🐱 '+cat.name;
         t.setAttribute('data-i',i);
         t.onclick=function(){data.ci=parseInt(this.getAttribute('data-i'));save();showProfile();};
         tabs.appendChild(t);
-    }
+    });
     var c=data.cats[data.ci];
     var age=c.bday?getAge(c.bday):'未登記';
     var adoptDays=c.adopt?getAdoptDays(c.adopt):'';
-    var photoHTML=c.photo?'<img class="profile-photo" src="'+c.photo+'">':
-        '<div style="width:100px;height:100px;border-radius:50%;background:#f0e0d6;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:40px">🐱</div>';
+    var photoHTML=c.photo?
+        '<img class="profile-photo" src="'+c.photo+'" onclick="triggerPhotoUpload()" title="點擊更換照片">':
+        '<div style="width:100px;height:100px;border-radius:50%;background:#f0e0d6;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:40px;cursor:pointer" onclick="triggerPhotoUpload()" title="點擊上傳照片">🐱</div>';
     var lastW=c.weights.length>0?c.weights[c.weights.length-1].v+' kg':'未記錄';
-    card.innerHTML=photoHTML+
+
+    card.innerHTML=
+        // ✅ 隱藏的 file input 用於更換照片
+        '<input type="file" id="profilePhotoInput" accept="image/*" style="display:none" onchange="updateProfilePhoto()">'+
+        photoHTML+
         '<div class="profile-name">'+c.name+'</div>'+
         '<div class="profile-age">'+(c.bday?'🎂 '+age:'')+'</div>'+
         (adoptDays?'<div class="profile-age">🏠 一起生活了 '+adoptDays+'</div>':'')+
-        '<div class="edit-btn-area"><button class="btn-edit" onclick="openEditPanel('+data.ci+')">✏️ 編輯資料</button></div>'+
-        '<div class="info-row"><span class="label">🎂 生日</span><span class="value">'+(c.bday||'未登記')+'</span></div>'+
-        '<div class="info-row"><span class="label">🏠 收養日</span><span class="value">'+(c.adopt||'未登記')+'</span></div>'+
-        '<div class="info-row"><span class="label">🐾 品種</span><span class="value">'+(c.breed||'未登記')+'</span></div>'+
-        '<div class="info-row"><span class="label">⚧ 性別</span><span class="value">'+(c.gender==='female'?'♀ 母':'♂ 公')+'</span></div>'+
-        '<div class="info-row"><span class="label">🎨 毛色</span><span class="value">'+(c.color||'未登記')+'</span></div>'+
+        '<div class="edit-btn-area"><button class="btn-edit" onclick="openEditPanel('+data.ci+')">✏️ 編輯全部資料</button></div>'+
+
+        // ✅ 每個欄位都可以內聯編輯
+        makeEditableRow('🎂 生日', c.bday||'未登記', 'profile-bday', 'date', c.bday||'')+
+        makeEditableRow('🏠 收養日', c.adopt||'未登記', 'profile-adopt', 'date', c.adopt||'')+
+        makeEditableRow('🐾 品種', c.breed||'未登記', 'profile-breed', 'text', c.breed||'')+
+        makeGenderRow(c.gender)+
+        makeEditableRow('🎨 毛色', c.color||'未登記', 'profile-color', 'text', c.color||'')+
         '<div class="info-row"><span class="label">⚖️ 體重</span><span class="value">'+lastW+'</span></div>';
+
     document.getElementById('weightCard').style.display='block';
     drawLineChart(); showWeightHistory(); showProfileHospital(); checkVaccineNotif();
 }
+
+// ✅ 生成可內聯編輯的行
+function makeEditableRow(label, displayVal, fieldId, inputType, currentVal) {
+    return '<div class="info-row-editable" id="row-'+fieldId+'">'+
+        '<span class="label">'+label+'</span>'+
+        '<span class="value" id="val-'+fieldId+'">'+displayVal+'</span>'+
+        '<button class="btn-edit" style="padding:3px 8px;font-size:11px;margin-left:6px" onclick="startInlineEdit(\''+fieldId+'\',\''+inputType+'\')">✏️</button>'+
+        '</div>'+
+        '<div id="edit-'+fieldId+'" style="display:none;padding:6px 0">'+
+        '<input type="'+inputType+'" id="input-'+fieldId+'" value="'+currentVal+'" class="inline-edit-input">'+
+        '<button class="inline-save-btn" onclick="saveInlineEdit(\''+fieldId+'\')">✅</button>'+
+        '<button class="inline-save-btn" style="background:#ccc;margin-left:4px" onclick="cancelInlineEdit(\''+fieldId+'\')">✕</button>'+
+        '</div>';
+}
+
+function makeGenderRow(gender) {
+    var display = gender==='female'?'♀ 母':'♂ 公';
+    return '<div class="info-row-editable" id="row-profile-gender">'+
+        '<span class="label">⚧ 性別</span>'+
+        '<span class="value" id="val-profile-gender">'+display+'</span>'+
+        '<button class="btn-edit" style="padding:3px 8px;font-size:11px;margin-left:6px" onclick="startGenderEdit()">✏️</button>'+
+        '</div>'+
+        '<div id="edit-profile-gender" style="display:none;padding:6px 0">'+
+        '<select id="input-profile-gender" class="inline-edit-input" style="max-width:150px">'+
+        '<option value="male"'+(gender==='male'?' selected':'')+'>♂ 公</option>'+
+        '<option value="female"'+(gender==='female'?' selected':'')+'>♀ 母</option>'+
+        '</select>'+
+        '<button class="inline-save-btn" onclick="saveGenderEdit()">✅</button>'+
+        '<button class="inline-save-btn" style="background:#ccc;margin-left:4px" onclick="cancelInlineEdit(\'profile-gender\')">✕</button>'+
+        '</div>';
+}
+
+function startInlineEdit(fieldId, inputType) {
+    document.getElementById('val-'+fieldId).parentElement.style.display='none';
+    document.getElementById('edit-'+fieldId).style.display='flex';
+    document.getElementById('edit-'+fieldId).style.alignItems='center';
+    document.getElementById('input-'+fieldId).focus();
+}
+function cancelInlineEdit(fieldId) {
+    document.getElementById('edit-'+fieldId).style.display='none';
+    document.getElementById('row-'+fieldId).style.display='flex';
+    // restore row display
+    var row = document.getElementById('row-'+fieldId);
+    if(row) row.style.display='';
+}
+function startGenderEdit() {
+    document.getElementById('edit-profile-gender').style.display='flex';
+    document.getElementById('edit-profile-gender').style.alignItems='center';
+}
+
+function saveInlineEdit(fieldId) {
+    var val = document.getElementById('input-'+fieldId).value;
+    var c = data.cats[data.ci];
+    var fieldMap = {
+        'profile-bday':'bday', 'profile-adopt':'adopt',
+        'profile-breed':'breed', 'profile-color':'color'
+    };
+    var prop = fieldMap[fieldId];
+    if(prop) { c[prop]=val; save(); showProfile(); }
+}
+function saveGenderEdit() {
+    var val = document.getElementById('input-profile-gender').value;
+    data.cats[data.ci].gender=val;
+    save(); showProfile();
+}
+
+// ✅ 更換照片
+function triggerPhotoUpload() {
+    document.getElementById('profilePhotoInput').click();
+}
+function updateProfilePhoto() {
+    var input=document.getElementById('profilePhotoInput');
+    if(!input.files||!input.files[0]) return;
+    var reader=new FileReader();
+    reader.onload=function(e){
+        data.cats[data.ci].photo=e.target.result;
+        save(); showProfile(); alert('✅ 照片已更新！');
+    };
+    reader.readAsDataURL(input.files[0]);
+}
+
 function getAge(bday){var b=new Date(bday),n=new Date();var y=n.getFullYear()-b.getFullYear(),m=n.getMonth()-b.getMonth();if(m<0){y--;m+=12;}return y>0?y+'歲'+m+'個月':m+'個月';}
 function getAdoptDays(d){var a=new Date(d),n=new Date(),diff=Math.floor((n-a)/86400000);if(diff<0)return '';if(diff<30)return diff+'天';if(diff<365)return Math.floor(diff/30)+'個月'+diff%30+'天';return Math.floor(diff/365)+'年'+Math.floor((diff%365)/30)+'個月';}
 
@@ -741,7 +885,7 @@ function showWeightHistory(){
     var html='<h3 style="color:#666;font-size:14px;margin-bottom:8px">📜 記錄明細</h3>';
     for(var i=c.weights.length-1;i>=0;i--){
         var w=c.weights[i],diff='';
-        if(i>0){var ch=(w.v-c.weights[i-1].v).toFixed(1);diff=ch>0?'<span style="color:#ff4444;font-size:12px"> ▲+'+ch+'</span>':ch<0?'<span style="color:#4caf50;font-size:12px"> ▼'+ch+'</span>':'<span style="color:#999;font-size:12px"> ─ 0</span>';}
+        if(i>0){var ch=(w.v-c.weights[i-1].v).toFixed(1);diff=ch>0?'<span style="color:#ff4444;font-size:12px"> ▲+'+ch+'</span>':ch<0?'<span style="color:#4caf50;font-size:12px"> ▼'+ch+'</span>':'<span style="color:#999;font-size:12px"> ─</span>';}
         html+='<div class="weight-history-item"><span class="w-date">'+(w.fullDate||w.d)+'</span><span class="w-val">'+w.v+' kg'+diff+'</span><button class="w-del" onclick="deleteWeight('+i+')">✕</button></div>';
     }
     el.innerHTML=html;
@@ -760,84 +904,28 @@ function showProfileHospital(){
 function saveFood(){
     if(!data.cats.length){alert('請先添加貓咪！');return;}
     var c=data.cats[document.getElementById('foodCat').value];
-    data.food.push({id:Date.now(),catId:c.id,catName:c.name,
-        date:document.getElementById('foodDate').value||new Date().toISOString().split('T')[0],
-        dry:document.getElementById('foodDry').value||'0',wet:document.getElementById('foodWet').value||'0',
-        water:document.getElementById('foodWater').value||'0',note:document.getElementById('foodNote').value,
-        time:new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'})});
+    data.food.push({id:Date.now(),catId:c.id,catName:c.name,date:document.getElementById('foodDate').value||new Date().toISOString().split('T')[0],dry:document.getElementById('foodDry').value||'0',wet:document.getElementById('foodWet').value||'0',water:document.getElementById('foodWater').value||'0',note:document.getElementById('foodNote').value,time:new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'})});
     save();['foodDry','foodWet','foodWater','foodNote'].forEach(function(id){document.getElementById(id).value='';});
-    showDailyList(); alert('✅ 飲食記錄已儲存！');
+    showDailyList(); renderAnalytics(); alert('✅ 飲食記錄已儲存！');
 }
-function openEditFood(id){
-    editingFoodIndex=-1;
-    for(var i=0;i<data.food.length;i++){if(data.food[i].id===id){editingFoodIndex=i;break;}}
-    if(editingFoodIndex<0)return;
-    var f=data.food[editingFoodIndex];
-    document.getElementById('editFoodDate').value=f.date||'';
-    document.getElementById('editFoodDry').value=f.dry||'0';
-    document.getElementById('editFoodWet').value=f.wet||'0';
-    document.getElementById('editFoodWater').value=f.water||'0';
-    document.getElementById('editFoodNote').value=f.note||'';
-    document.getElementById('overlayFood').classList.add('show');
-    document.getElementById('panelFood').classList.add('show');
-}
+function openEditFood(id){editingFoodIndex=-1;for(var i=0;i<data.food.length;i++){if(data.food[i].id===id){editingFoodIndex=i;break;}}if(editingFoodIndex<0)return;var f=data.food[editingFoodIndex];document.getElementById('editFoodDate').value=f.date||'';document.getElementById('editFoodDry').value=f.dry||'0';document.getElementById('editFoodWet').value=f.wet||'0';document.getElementById('editFoodWater').value=f.water||'0';document.getElementById('editFoodNote').value=f.note||'';document.getElementById('overlayFood').classList.add('show');document.getElementById('panelFood').classList.add('show');}
 function closeEditFood(){document.getElementById('overlayFood').classList.remove('show');document.getElementById('panelFood').classList.remove('show');editingFoodIndex=-1;}
-function updateFood(){
-    if(editingFoodIndex<0)return;
-    var f=data.food[editingFoodIndex];
-    f.date=document.getElementById('editFoodDate').value;
-    f.dry=document.getElementById('editFoodDry').value||'0';
-    f.wet=document.getElementById('editFoodWet').value||'0';
-    f.water=document.getElementById('editFoodWater').value||'0';
-    f.note=document.getElementById('editFoodNote').value;
-    save();closeEditFood();showDailyList();alert('✅ 飲食記錄已更新！');
-}
-function deleteFood(id){if(!confirm('確定刪除此飲食記錄？'))return;data.food=data.food.filter(function(f){return f.id!==id;});save();showDailyList();}
+function updateFood(){if(editingFoodIndex<0)return;var f=data.food[editingFoodIndex];f.date=document.getElementById('editFoodDate').value;f.dry=document.getElementById('editFoodDry').value||'0';f.wet=document.getElementById('editFoodWet').value||'0';f.water=document.getElementById('editFoodWater').value||'0';f.note=document.getElementById('editFoodNote').value;save();closeEditFood();showDailyList();renderAnalytics();alert('✅ 飲食記錄已更新！');}
+function deleteFood(id){if(!confirm('確定刪除此飲食記錄？'))return;data.food=data.food.filter(function(f){return f.id!==id;});save();showDailyList();renderAnalytics();}
 
 // ============ TOILET ============
 function saveToilet(){
     if(!data.cats.length){alert('請先添加貓咪！');return;}
     var c=data.cats[document.getElementById('toiletCat').value];
     var dv=document.getElementById('toiletDate').value,dateObj=dv?new Date(dv):new Date();
-    data.toilet.push({id:Date.now(),catId:c.id,catName:c.name,date:dateObj.toISOString(),dateDisplay:dateObj.toLocaleString('zh-TW'),
-        poopCount:document.getElementById('poopCount').value,poopType:selectedOpts.poopType,poopColor:selectedOpts.poopColor,
-        peeCount:document.getElementById('peeCount').value,peeSize:selectedOpts.peeSize,peeColor:selectedOpts.peeColor,
-        note:document.getElementById('toiletNote').value});
-    save();document.getElementById('toiletNote').value='';setToiletDateTime();showDailyList();alert('✅ 排泄記錄已儲存！');
+    data.toilet.push({id:Date.now(),catId:c.id,catName:c.name,date:dateObj.toISOString(),dateDisplay:dateObj.toLocaleString('zh-TW'),poopCount:document.getElementById('poopCount').value,poopType:selectedOpts.poopType,poopColor:selectedOpts.poopColor,peeCount:document.getElementById('peeCount').value,peeSize:selectedOpts.peeSize,peeColor:selectedOpts.peeColor,note:document.getElementById('toiletNote').value});
+    save();document.getElementById('toiletNote').value='';setToiletDateTime();showDailyList();renderAnalytics();alert('✅ 排泄記錄已儲存！');
 }
-function openEditToilet(id){
-    editingToiletIndex=-1;
-    for(var i=0;i<data.toilet.length;i++){if(data.toilet[i].id===id){editingToiletIndex=i;break;}}
-    if(editingToiletIndex<0)return;
-    var t=data.toilet[editingToiletIndex];
-    var dt=new Date(t.date);
-    var dtStr=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0')+'T'+String(dt.getHours()).padStart(2,'0')+':'+String(dt.getMinutes()).padStart(2,'0');
-    document.getElementById('editToiletDate').value=dtStr;
-    document.getElementById('editPoopCount').value=t.poopCount||'1';
-    document.getElementById('editPeeCount').value=t.peeCount||'2';
-    document.getElementById('editToiletNote').value=t.note||'';
-    editOpts.poopType=t.poopType||'normal'; editOpts.poopColor=t.poopColor||'brown';
-    editOpts.peeSize=t.peeSize||'normal'; editOpts.peeColor=t.peeColor||'normal';
-    hlBtns('editPoopTypeBtns',['hard','normal','soft','diarrhea'],editOpts.poopType);
-    hlBtns('editPoopColorBtns',['brown','dark','light','blood'],editOpts.poopColor);
-    hlBtns('editPeeSizeBtns',['small','normal','large'],editOpts.peeSize);
-    hlBtns('editPeeColorBtns',['normal','dark','clear','blood'],editOpts.peeColor);
-    document.getElementById('overlayToilet').classList.add('show');
-    document.getElementById('panelToilet').classList.add('show');
-}
+function openEditToilet(id){editingToiletIndex=-1;for(var i=0;i<data.toilet.length;i++){if(data.toilet[i].id===id){editingToiletIndex=i;break;}}if(editingToiletIndex<0)return;var t=data.toilet[editingToiletIndex];var dt=new Date(t.date);var dtStr=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0')+'T'+String(dt.getHours()).padStart(2,'0')+':'+String(dt.getMinutes()).padStart(2,'0');document.getElementById('editToiletDate').value=dtStr;document.getElementById('editPoopCount').value=t.poopCount||'1';document.getElementById('editPeeCount').value=t.peeCount||'2';document.getElementById('editToiletNote').value=t.note||'';editOpts.poopType=t.poopType||'normal';editOpts.poopColor=t.poopColor||'brown';editOpts.peeSize=t.peeSize||'normal';editOpts.peeColor=t.peeColor||'normal';hlBtns('editPoopTypeBtns',['hard','normal','soft','diarrhea'],editOpts.poopType);hlBtns('editPoopColorBtns',['brown','dark','light','blood'],editOpts.poopColor);hlBtns('editPeeSizeBtns',['small','normal','large'],editOpts.peeSize);hlBtns('editPeeColorBtns',['normal','dark','clear','blood'],editOpts.peeColor);document.getElementById('overlayToilet').classList.add('show');document.getElementById('panelToilet').classList.add('show');}
 function hlBtns(cid,vals,sel){var btns=document.getElementById(cid).querySelectorAll('.size-btn');for(var i=0;i<btns.length;i++){btns[i].classList.remove('selected');if(vals[i]===sel)btns[i].classList.add('selected');}}
 function closeEditToilet(){document.getElementById('overlayToilet').classList.remove('show');document.getElementById('panelToilet').classList.remove('show');editingToiletIndex=-1;}
-function updateToilet(){
-    if(editingToiletIndex<0)return;
-    var t=data.toilet[editingToiletIndex];
-    var dv=document.getElementById('editToiletDate').value,dateObj=dv?new Date(dv):new Date();
-    t.date=dateObj.toISOString();t.dateDisplay=dateObj.toLocaleString('zh-TW');
-    t.poopCount=document.getElementById('editPoopCount').value;t.peeCount=document.getElementById('editPeeCount').value;
-    t.poopType=editOpts.poopType;t.poopColor=editOpts.poopColor;t.peeSize=editOpts.peeSize;t.peeColor=editOpts.peeColor;
-    t.note=document.getElementById('editToiletNote').value;
-    save();closeEditToilet();showDailyList();alert('✅ 排泄記錄已更新！');
-}
-function deleteToilet(id){if(!confirm('確定刪除此排泄記錄？'))return;data.toilet=data.toilet.filter(function(t){return t.id!==id;});save();showDailyList();}
+function updateToilet(){if(editingToiletIndex<0)return;var t=data.toilet[editingToiletIndex];var dv=document.getElementById('editToiletDate').value,dateObj=dv?new Date(dv):new Date();t.date=dateObj.toISOString();t.dateDisplay=dateObj.toLocaleString('zh-TW');t.poopCount=document.getElementById('editPoopCount').value;t.peeCount=document.getElementById('editPeeCount').value;t.poopType=editOpts.poopType;t.poopColor=editOpts.poopColor;t.peeSize=editOpts.peeSize;t.peeColor=editOpts.peeColor;t.note=document.getElementById('editToiletNote').value;save();closeEditToilet();showDailyList();renderAnalytics();alert('✅ 排泄記錄已更新！');}
+function deleteToilet(id){if(!confirm('確定刪除此排泄記錄？'))return;data.toilet=data.toilet.filter(function(t){return t.id!==id;});save();showDailyList();renderAnalytics();}
 
 // ============ DAILY LIST ============
 function showDailyTab(tab,el){dailyTabFilter=tab;document.querySelectorAll('.tab-item').forEach(function(b){b.classList.remove('active');});if(el)el.classList.add('active');showDailyList();}
@@ -849,44 +937,42 @@ function showDailyList(){
     var CL={brown:'🟤棕',dark:'⚫深',light:'🟡淺',blood:'🔴血'};
     var SL={small:'小',normal:'正常',large:'大'};
     var UL={normal:'🟡正常',dark:'🟠深',clear:'⚪透明',blood:'🔴血'};
-    if(dailyTabFilter==='all'||dailyTabFilter==='food'){
-        data.food.forEach(function(f){all.push({sort:f.date+' '+(f.time||''),html:
-            '<div class="record-item"><div class="title">🍽️ '+f.catName+' 飲食</div>'+
-            '<div class="date">📅 '+f.date+' '+(f.time||'')+'</div>'+
-            '<div class="note">🥣 乾糧:'+f.dry+'g　🥫 罐頭:'+f.wet+'g　💧 水:'+f.water+'ml</div>'+
-            (f.note?'<div class="note">📝 '+f.note+'</div>':'')+
-            '<div class="record-actions"><button class="btn-edit" onclick="openEditFood('+f.id+')">✏️ 編輯</button>'+
-            '<button class="btn-del" onclick="deleteFood('+f.id+')">🗑️ 刪除</button></div></div>'});});
-    }
-    if(dailyTabFilter==='all'||dailyTabFilter==='toilet'){
-        data.toilet.forEach(function(t){all.push({sort:t.date,html:
-            '<div class="record-item"><div class="title">🚽 '+t.catName+' 排泄</div>'+
-            '<div class="date">📅 '+t.dateDisplay+'</div>'+
-            '<div class="note">💩 大便:'+t.poopCount+'次 ('+(PL[t.poopType]||t.poopType)+', '+(CL[t.poopColor]||t.poopColor)+')</div>'+
-            '<div class="note">💧 尿塊:'+t.peeCount+'塊 (大小:'+(SL[t.peeSize]||t.peeSize)+', '+(UL[t.peeColor]||t.peeColor)+')</div>'+
-            (t.note?'<div class="note">📝 '+t.note+'</div>':'')+
-            '<div class="record-actions"><button class="btn-edit" onclick="openEditToilet('+t.id+')">✏️ 編輯</button>'+
-            '<button class="btn-del" onclick="deleteToilet('+t.id+')">🗑️ 刪除</button></div></div>'});});
-    }
+    if(dailyTabFilter==='all'||dailyTabFilter==='food'){data.food.forEach(function(f){all.push({sort:f.date+' '+(f.time||''),html:'<div class="record-item"><div class="title">🍽️ '+f.catName+' 飲食</div><div class="date">📅 '+f.date+' '+(f.time||'')+'</div><div class="note">🥣 乾糧:'+f.dry+'g　🥫 罐頭:'+f.wet+'g　💧 水:'+f.water+'ml</div>'+(f.note?'<div class="note">📝 '+f.note+'</div>':'')+'<div class="record-actions"><button class="btn-edit" onclick="openEditFood('+f.id+')">✏️ 編輯</button><button class="btn-del" onclick="deleteFood('+f.id+')">🗑️ 刪除</button></div></div>'});});}
+    if(dailyTabFilter==='all'||dailyTabFilter==='toilet'){data.toilet.forEach(function(t){all.push({sort:t.date,html:'<div class="record-item"><div class="title">🚽 '+t.catName+' 排泄</div><div class="date">📅 '+t.dateDisplay+'</div><div class="note">💩 大便:'+t.poopCount+'次 ('+(PL[t.poopType]||t.poopType)+', '+(CL[t.poopColor]||t.poopColor)+')</div><div class="note">💧 尿塊:'+t.peeCount+'塊 (大小:'+(SL[t.peeSize]||t.peeSize)+', '+(UL[t.peeColor]||t.peeColor)+')</div>'+(t.note?'<div class="note">📝 '+t.note+'</div>':'')+'<div class="record-actions"><button class="btn-edit" onclick="openEditToilet('+t.id+')">✏️ 編輯</button><button class="btn-del" onclick="deleteToilet('+t.id+')">🗑️ 刪除</button></div></div>'});});}
     all.sort(function(a,b){return b.sort.localeCompare(a.sort);});
     container.innerHTML=all.length?all.slice(0,30).map(function(r){return r.html;}).join(''):'<div class="empty"><span>📋</span><p>還沒有記錄</p></div>';
 }
-function checkToiletWarning(){
-    var twoDays=Date.now()-2*86400000;
-    var warn=data.cats.filter(function(c){var last=null;for(var j=data.toilet.length-1;j>=0;j--){if(data.toilet[j].catId===c.id){last=data.toilet[j];break;}}return last&&new Date(last.date).getTime()<twoDays;}).map(function(c){return c.name;});
-    document.getElementById('toiletWarning').innerHTML=warn.length?'<div class="warning">⚠️ '+warn.join('、')+' 已超過2天沒有排泄記錄！</div>':'';
+function checkToiletWarning(){var twoDays=Date.now()-2*86400000;var warn=data.cats.filter(function(c){var last=null;for(var j=data.toilet.length-1;j>=0;j--){if(data.toilet[j].catId===c.id){last=data.toilet[j];break;}}return last&&new Date(last.date).getTime()<twoDays;}).map(function(c){return c.name;});document.getElementById('toiletWarning').innerHTML=warn.length?'<div class="warning">⚠️ '+warn.join('、')+' 已超過2天沒有排泄記錄！</div>':'';}
+
+// ============ 數據分析 ============
+function setAnalyticsPeriod(days,el){analyticsDays=days;document.querySelectorAll('.period-btn').forEach(function(b){b.classList.remove('active');});if(el)el.classList.add('active');renderAnalytics();}
+function getFilteredRecords(){var cutoff=analyticsDays>0?Date.now()-analyticsDays*86400000:0;return{food:data.food.filter(function(f){return analyticsDays===0||new Date(f.date).getTime()>=cutoff;}),toilet:data.toilet.filter(function(t){return analyticsDays===0||new Date(t.date).getTime()>=cutoff;})};}
+function renderAnalytics(){
+    var fd=getFilteredRecords(),foodList=fd.food,toiletList=fd.toilet;
+    var totalDry=0,totalWet=0,totalWater=0,totalPoop=0,totalPee=0;
+    foodList.forEach(function(f){totalDry+=parseFloat(f.dry)||0;totalWet+=parseFloat(f.wet)||0;totalWater+=parseFloat(f.water)||0;});
+    toiletList.forEach(function(t){totalPoop+=parseInt(t.poopCount)||0;totalPee+=parseInt(t.peeCount)||0;});
+    document.getElementById('analyticsOverview').innerHTML=mkStat('🍽️','飲食記錄',foodList.length+'次','')+mkStat('🚽','排泄記錄',toiletList.length+'次','blue')+mkStat('💩','大便總數',totalPoop+'次','orange')+mkStat('💧','尿塊總數',totalPee+'塊','green');
+    var maxFood=Math.max(totalDry,totalWet,totalWater,1);
+    document.getElementById('analyticsFoodBars').innerHTML=mkBar('🥣 乾糧',totalDry,maxFood,totalDry.toFixed(0)+'g','')+mkBar('🥫 罐頭',totalWet,maxFood,totalWet.toFixed(0)+'g','orange')+mkBar('💧 飲水',totalWater,maxFood,totalWater.toFixed(0)+'ml','blue');
+    var avgWater=foodList.length?(totalWater/foodList.length).toFixed(0):0;var avgDry=foodList.length?(totalDry/foodList.length).toFixed(0):0;
+    var tipMsg=foodList.length===0?'暫無飲食數據':parseFloat(avgWater)<50?'⚠️ 飲水量偏少（平均 '+avgWater+'ml），請確保充足飲水！':'✅ 平均每次乾糧 '+avgDry+'g，飲水 '+avgWater+'ml，飲食正常';
+    document.getElementById('analyticsFoodTip').innerHTML='<div class="analytics-tip '+(parseFloat(avgWater)<50&&foodList.length>0?'red':'green')+'">'+tipMsg+'</div>';
+    var typeCnt={hard:0,normal:0,soft:0,diarrhea:0},colorCnt={brown:0,dark:0,light:0,blood:0};
+    toiletList.forEach(function(t){if(typeCnt[t.poopType]!==undefined)typeCnt[t.poopType]++;if(colorCnt[t.poopColor]!==undefined)colorCnt[t.poopColor]++;});
+    var maxType=Math.max(typeCnt.hard,typeCnt.normal,typeCnt.soft,typeCnt.diarrhea,1),maxColor=Math.max(colorCnt.brown,colorCnt.dark,colorCnt.light,colorCnt.blood,1);
+    document.getElementById('analyticsToiletBars').innerHTML='<div style="font-size:12px;color:#aaa;margin-bottom:4px">便便狀態分佈</div>'+mkBar('硬乾',typeCnt.hard,maxType,typeCnt.hard+'次','orange')+mkBar('正常',typeCnt.normal,maxType,typeCnt.normal+'次','green')+mkBar('軟便',typeCnt.soft,maxType,typeCnt.soft+'次','orange')+mkBar('腹瀉',typeCnt.diarrhea,maxType,typeCnt.diarrhea+'次','')+' <div style="font-size:12px;color:#aaa;margin:8px 0 4px">便便顏色分佈</div>'+mkBar('🟤 棕色',colorCnt.brown,maxColor,colorCnt.brown+'次','green')+mkBar('⚫ 深色',colorCnt.dark,maxColor,colorCnt.dark+'次','orange')+mkBar('🟡 淺色',colorCnt.light,maxColor,colorCnt.light+'次','blue')+mkBar('🔴 帶血',colorCnt.blood,maxColor,colorCnt.blood+'次','');
+    var tips=[];if(!toiletList.length){tips.push({m:'暫無排泄數據',c:'analytics-tip'});}else{if(colorCnt.blood>0)tips.push({m:'🚨 發現帶血便便 '+colorCnt.blood+' 次，請儘快就醫！',c:'analytics-tip red'});if(typeCnt.diarrhea>0)tips.push({m:'⚠️ 腹瀉 '+typeCnt.diarrhea+' 次，注意飲食及補水。',c:'analytics-tip'});if(typeCnt.hard>0)tips.push({m:'⚠️ 硬/乾便便 '+typeCnt.hard+' 次，建議增加飲水量。',c:'analytics-tip'});tips.push({m:'💩 平均每次大便 '+(totalPoop/toiletList.length).toFixed(1)+' 次，💧 尿塊 '+(totalPee/toiletList.length).toFixed(1)+' 塊',c:'analytics-tip green'});}
+    document.getElementById('analyticsToiletTips').innerHTML=tips.map(function(t){return'<div class="'+t.c+'" style="margin-top:6px">'+t.m+'</div>';}).join('');
 }
+function mkStat(icon,label,value,cls){return'<div class="analytics-stat '+cls+'"><div class="analytics-stat-icon">'+icon+'</div><div class="analytics-stat-label">'+label+'</div><div class="analytics-stat-value">'+value+'</div></div>';}
+function mkBar(label,val,max,numText,cls){var pct=max>0?Math.round((val/max)*100):0;return'<div class="bar-row"><span class="bar-label">'+label+'</span><div class="bar-track"><div class="bar-fill '+cls+'" style="width:'+pct+'%"></div></div><span class="bar-num">'+numText+'</span></div>';}
 
 // ============ ABNORMAL ============
 var abnPhotos=[];
 function toggleSymptom(el){el.classList.toggle('selected');}
 function toggleEditSymptom(el){el.classList.toggle('selected');}
-function previewAbn(){
-    var input=document.getElementById('abnFile'),preview=document.getElementById('abnPreview');
-    preview.innerHTML='';abnPhotos=[];
-    if(!input.files)return;
-    for(var i=0;i<input.files.length;i++){(function(file){var reader=new FileReader();reader.onload=function(e){abnPhotos.push(e.target.result);preview.innerHTML+='<img src="'+e.target.result+'" style="width:60px;height:60px;object-fit:cover;border-radius:6px">';};reader.readAsDataURL(file);})(input.files[i]);}
-}
+function previewAbn(){var input=document.getElementById('abnFile'),preview=document.getElementById('abnPreview');preview.innerHTML='';abnPhotos=[];if(!input.files)return;for(var i=0;i<input.files.length;i++){(function(file){var reader=new FileReader();reader.onload=function(e){abnPhotos.push(e.target.result);preview.innerHTML+='<img src="'+e.target.result+'" style="width:60px;height:60px;object-fit:cover;border-radius:6px">';};reader.readAsDataURL(file);})(input.files[i]);}}
 function saveAbnormal(){
     if(!data.cats.length){alert('請先添加貓咪！');return;}
     var c=data.cats[document.getElementById('abnCat').value];
@@ -895,29 +981,11 @@ function saveAbnormal(){
     if(!symptoms.length){alert('請至少選擇一個症狀！');return;}
     var dv=document.getElementById('abnDate').value||new Date().toISOString().slice(0,16);
     data.abnormal.push({id:Date.now(),catId:c.id,catName:c.name,date:dv,symptoms:symptoms,desc:document.getElementById('abnDesc').value,photos:abnPhotos.slice(0,4)});
-    save();document.querySelectorAll('#symptomBtns .symptom-btn').forEach(function(b){b.classList.remove('selected');});
-    document.getElementById('abnDesc').value='';document.getElementById('abnFile').value='';document.getElementById('abnPreview').innerHTML='';abnPhotos=[];
-    showAbnList();alert('⚠️ 異常記錄已儲存！');
+    save();document.querySelectorAll('#symptomBtns .symptom-btn').forEach(function(b){b.classList.remove('selected');});document.getElementById('abnDesc').value='';document.getElementById('abnFile').value='';document.getElementById('abnPreview').innerHTML='';abnPhotos=[];showAbnList();alert('⚠️ 異常記錄已儲存！');
 }
-function openEditAbn(id){
-    editingAbnIndex=-1;
-    for(var i=0;i<data.abnormal.length;i++){if(data.abnormal[i].id===id){editingAbnIndex=i;break;}}
-    if(editingAbnIndex<0)return;
-    var r=data.abnormal[editingAbnIndex];
-    document.getElementById('editAbnDate').value=r.date||'';
-    document.getElementById('editAbnDesc').value=r.desc||'';
-    document.querySelectorAll('#editSymptomBtns .symptom-btn').forEach(function(b){b.classList.remove('selected');if(r.symptoms.indexOf(b.textContent.trim())>=0)b.classList.add('selected');});
-    document.getElementById('overlayAbn').classList.add('show');document.getElementById('panelAbn').classList.add('show');
-}
+function openEditAbn(id){editingAbnIndex=-1;for(var i=0;i<data.abnormal.length;i++){if(data.abnormal[i].id===id){editingAbnIndex=i;break;}}if(editingAbnIndex<0)return;var r=data.abnormal[editingAbnIndex];document.getElementById('editAbnDate').value=r.date||'';document.getElementById('editAbnDesc').value=r.desc||'';document.querySelectorAll('#editSymptomBtns .symptom-btn').forEach(function(b){b.classList.remove('selected');if(r.symptoms.indexOf(b.textContent.trim())>=0)b.classList.add('selected');});document.getElementById('overlayAbn').classList.add('show');document.getElementById('panelAbn').classList.add('show');}
 function closeEditAbn(){document.getElementById('overlayAbn').classList.remove('show');document.getElementById('panelAbn').classList.remove('show');editingAbnIndex=-1;}
-function updateAbn(){
-    if(editingAbnIndex<0)return;
-    var r=data.abnormal[editingAbnIndex];
-    r.date=document.getElementById('editAbnDate').value;r.desc=document.getElementById('editAbnDesc').value;
-    r.symptoms=Array.from(document.querySelectorAll('#editSymptomBtns .symptom-btn.selected')).map(function(b){return b.textContent.trim();});
-    if(!r.symptoms.length){alert('請至少選擇一個症狀！');return;}
-    save();closeEditAbn();showAbnList();alert('✅ 異常記錄已更新！');
-}
+function updateAbn(){if(editingAbnIndex<0)return;var r=data.abnormal[editingAbnIndex];r.date=document.getElementById('editAbnDate').value;r.desc=document.getElementById('editAbnDesc').value;r.symptoms=Array.from(document.querySelectorAll('#editSymptomBtns .symptom-btn.selected')).map(function(b){return b.textContent.trim();});if(!r.symptoms.length){alert('請至少選擇一個症狀！');return;}save();closeEditAbn();showAbnList();alert('✅ 異常記錄已更新！');}
 function deleteAbn(id){if(!confirm('確定刪除？'))return;data.abnormal=data.abnormal.filter(function(r){return r.id!==id;});save();showAbnList();}
 function showAbnList(){
     var container=document.getElementById('abnList');
@@ -925,189 +993,46 @@ function showAbnList(){
     container.innerHTML=data.abnormal.slice().reverse().map(function(r){
         var tags=r.symptoms.map(function(s){return'<span class="abnormal-tag">'+s+'</span>';}).join('');
         var photos=r.photos&&r.photos.length?'<div class="diary-photos">'+r.photos.map(function(p){return'<img src="'+p+'">';}).join('')+'</div>':'';
-        return'<div class="abnormal-record"><div style="color:#ff4444;font-weight:bold">⚠️ '+r.date.replace('T',' ')+'</div>'+
-            '<span class="cat-badge">🐱 '+r.catName+'</span><br><div style="margin-top:6px">'+tags+'</div>'+
-            (r.desc?'<div style="color:#666;margin-top:5px">'+r.desc+'</div>':'')+photos+
-            '<div class="record-actions"><button class="btn-edit" onclick="openEditAbn('+r.id+')">✏️ 編輯</button>'+
-            '<button class="btn-del" onclick="deleteAbn('+r.id+')">🗑️ 刪除</button></div></div>';
+        return'<div class="abnormal-record"><div style="color:#ff4444;font-weight:bold">⚠️ '+r.date.replace('T',' ')+'</div><span class="cat-badge">🐱 '+r.catName+'</span><br><div style="margin-top:6px">'+tags+'</div>'+(r.desc?'<div style="color:#666;margin-top:5px">'+r.desc+'</div>':'')+photos+'<div class="record-actions"><button class="btn-edit" onclick="openEditAbn('+r.id+')">✏️ 編輯</button><button class="btn-del" onclick="deleteAbn('+r.id+')">🗑️ 刪除</button></div></div>';
     }).join('');
 }
 
 // ============ HOSPITAL ============
-function saveHospital(){
-    if(!data.cats.length){alert('請先添加貓咪！');return;}
-    var c=data.cats[document.getElementById('hospCat').value];
-    var date=document.getElementById('hospDate').value,reason=document.getElementById('hospReason').value.trim();
-    if(!date||!reason){alert('請填寫日期和原因！');return;}
-    data.hospital.push({id:Date.now(),catId:c.id,catName:c.name,date:date,reason:reason,hospital:document.getElementById('hospName').value,note:document.getElementById('hospNote').value,cost:document.getElementById('hospCost').value});
-    save();document.getElementById('hospDate').value=new Date().toISOString().split('T')[0];
-    ['hospReason','hospName','hospNote','hospCost'].forEach(function(id){document.getElementById(id).value='';});showHospList();alert('✅ 已儲存！');
-}
-function openEditHosp(id){
-    editingHospIndex=-1;
-    for(var i=0;i<data.hospital.length;i++){if(data.hospital[i].id===id){editingHospIndex=i;break;}}
-    if(editingHospIndex<0)return;
-    var r=data.hospital[editingHospIndex];
-    document.getElementById('editHospDate').value=r.date||'';
-    document.getElementById('editHospReason').value=r.reason||'';
-    document.getElementById('editHospName').value=r.hospital||'';
-    document.getElementById('editHospNote').value=r.note||'';
-    document.getElementById('editHospCost').value=r.cost||'';
-    document.getElementById('overlayHosp').classList.add('show');document.getElementById('panelHosp').classList.add('show');
-}
+function saveHospital(){if(!data.cats.length){alert('請先添加貓咪！');return;}var c=data.cats[document.getElementById('hospCat').value];var date=document.getElementById('hospDate').value,reason=document.getElementById('hospReason').value.trim();if(!date||!reason){alert('請填寫日期和原因！');return;}data.hospital.push({id:Date.now(),catId:c.id,catName:c.name,date:date,reason:reason,hospital:document.getElementById('hospName').value,note:document.getElementById('hospNote').value,cost:document.getElementById('hospCost').value});save();document.getElementById('hospDate').value=new Date().toISOString().split('T')[0];['hospReason','hospName','hospNote','hospCost'].forEach(function(id){document.getElementById(id).value='';});showHospList();alert('✅ 已儲存！');}
+function openEditHosp(id){editingHospIndex=-1;for(var i=0;i<data.hospital.length;i++){if(data.hospital[i].id===id){editingHospIndex=i;break;}}if(editingHospIndex<0)return;var r=data.hospital[editingHospIndex];document.getElementById('editHospDate').value=r.date||'';document.getElementById('editHospReason').value=r.reason||'';document.getElementById('editHospName').value=r.hospital||'';document.getElementById('editHospNote').value=r.note||'';document.getElementById('editHospCost').value=r.cost||'';document.getElementById('overlayHosp').classList.add('show');document.getElementById('panelHosp').classList.add('show');}
 function closeEditHosp(){document.getElementById('overlayHosp').classList.remove('show');document.getElementById('panelHosp').classList.remove('show');editingHospIndex=-1;}
-function updateHosp(){
-    if(editingHospIndex<0)return;
-    var r=data.hospital[editingHospIndex];
-    r.date=document.getElementById('editHospDate').value;r.reason=document.getElementById('editHospReason').value;
-    r.hospital=document.getElementById('editHospName').value;r.note=document.getElementById('editHospNote').value;r.cost=document.getElementById('editHospCost').value;
-    save();closeEditHosp();showHospList();showProfileHospital();alert('✅ 就診記錄已更新！');
-}
+function updateHosp(){if(editingHospIndex<0)return;var r=data.hospital[editingHospIndex];r.date=document.getElementById('editHospDate').value;r.reason=document.getElementById('editHospReason').value;r.hospital=document.getElementById('editHospName').value;r.note=document.getElementById('editHospNote').value;r.cost=document.getElementById('editHospCost').value;save();closeEditHosp();showHospList();showProfileHospital();alert('✅ 就診記錄已更新！');}
 function deleteHosp(id){if(!confirm('確定刪除？'))return;data.hospital=data.hospital.filter(function(r){return r.id!==id;});save();showHospList();}
-function showHospList(){
-    var el=document.getElementById('hospList');
-    if(!data.hospital.length){el.innerHTML='<div class="empty"><span>🏥</span><p>還沒有記錄</p></div>';return;}
-    el.innerHTML=data.hospital.slice().sort(function(a,b){return new Date(b.date)-new Date(a.date);}).map(function(r){
-        return'<div class="hospital-record"><div style="color:#ff6b9d;font-weight:bold">📅 '+r.date+'</div>'+
-            '<span class="cat-badge">🐱 '+r.catName+'</span><div style="font-weight:bold;margin-top:4px">'+r.reason+'</div>'+
-            (r.hospital?'<div style="color:#666">🏥 '+r.hospital+'</div>':'')+(r.note?'<div style="color:#666">📝 '+r.note+'</div>':'')+(r.cost?'<div style="color:#666">💰 $'+r.cost+'</div>':'')+
-            '<div class="record-actions"><button class="btn-edit" onclick="openEditHosp('+r.id+')">✏️ 編輯</button>'+
-            '<button class="btn-del" onclick="deleteHosp('+r.id+')">🗑️ 刪除</button></div></div>';
-    }).join('');
-}
+function showHospList(){var el=document.getElementById('hospList');if(!data.hospital.length){el.innerHTML='<div class="empty"><span>🏥</span><p>還沒有記錄</p></div>';return;}el.innerHTML=data.hospital.slice().sort(function(a,b){return new Date(b.date)-new Date(a.date);}).map(function(r){return'<div class="hospital-record"><div style="color:#ff6b9d;font-weight:bold">📅 '+r.date+'</div><span class="cat-badge">🐱 '+r.catName+'</span><div style="font-weight:bold;margin-top:4px">'+r.reason+'</div>'+(r.hospital?'<div style="color:#666">🏥 '+r.hospital+'</div>':'')+(r.note?'<div style="color:#666">📝 '+r.note+'</div>':'')+(r.cost?'<div style="color:#666">💰 $'+r.cost+'</div>':'')+'<div class="record-actions"><button class="btn-edit" onclick="openEditHosp('+r.id+')">✏️ 編輯</button><button class="btn-del" onclick="deleteHosp('+r.id+')">🗑️ 刪除</button></div></div>';}).join('');}
 
 // ============ VACCINE ============
-function saveVaccine(){
-    if(!data.cats.length){alert('請先添加貓咪！');return;}
-    var c=data.cats[document.getElementById('vacCat').value];
-    var vacDate=document.getElementById('vacDate').value;
-    if(!vacDate){alert('請選擇日期！');return;}
-    var vacType=document.getElementById('vacType').value,nextDate=document.getElementById('vacNext').value;
-    if(!nextDate){var d=new Date(vacDate);if(vacType.indexOf('疫苗')>=0)d.setFullYear(d.getFullYear()+1);else if(vacType==='體內驅蟲')d.setMonth(d.getMonth()+3);else if(vacType==='體外驅蟲')d.setMonth(d.getMonth()+1);else d.setFullYear(d.getFullYear()+1);nextDate=d.toISOString().split('T')[0];}
-    data.vaccine.push({id:Date.now(),catId:c.id,catName:c.name,type:vacType,date:vacDate,nextDate:nextDate,note:document.getElementById('vacNote').value});
-    save();document.getElementById('vacDate').value=new Date().toISOString().split('T')[0];document.getElementById('vacNext').value='';document.getElementById('vacNote').value='';
-    showVaccineList();checkVaccineNotif();alert('✅ 疫苗/驅蟲記錄已儲存！');
-}
-function openEditVac(id){
-    editingVacIndex=-1;
-    for(var i=0;i<data.vaccine.length;i++){if(data.vaccine[i].id===id){editingVacIndex=i;break;}}
-    if(editingVacIndex<0)return;
-    var v=data.vaccine[editingVacIndex];
-    document.getElementById('editVacType').value=v.type||'三合一疫苗';
-    document.getElementById('editVacDate').value=v.date||'';
-    document.getElementById('editVacNext').value=v.nextDate||'';
-    document.getElementById('editVacNote').value=v.note||'';
-    document.getElementById('overlayVac').classList.add('show');document.getElementById('panelVac').classList.add('show');
-}
+function saveVaccine(){if(!data.cats.length){alert('請先添加貓咪！');return;}var c=data.cats[document.getElementById('vacCat').value];var vacDate=document.getElementById('vacDate').value;if(!vacDate){alert('請選擇日期！');return;}var vacType=document.getElementById('vacType').value,nextDate=document.getElementById('vacNext').value;if(!nextDate){var d=new Date(vacDate);if(vacType.indexOf('疫苗')>=0)d.setFullYear(d.getFullYear()+1);else if(vacType==='體內驅蟲')d.setMonth(d.getMonth()+3);else if(vacType==='體外驅蟲')d.setMonth(d.getMonth()+1);else d.setFullYear(d.getFullYear()+1);nextDate=d.toISOString().split('T')[0];}data.vaccine.push({id:Date.now(),catId:c.id,catName:c.name,type:vacType,date:vacDate,nextDate:nextDate,note:document.getElementById('vacNote').value});save();document.getElementById('vacDate').value=new Date().toISOString().split('T')[0];document.getElementById('vacNext').value='';document.getElementById('vacNote').value='';showVaccineList();checkVaccineNotif();alert('✅ 疫苗/驅蟲記錄已儲存！');}
+function openEditVac(id){editingVacIndex=-1;for(var i=0;i<data.vaccine.length;i++){if(data.vaccine[i].id===id){editingVacIndex=i;break;}}if(editingVacIndex<0)return;var v=data.vaccine[editingVacIndex];document.getElementById('editVacType').value=v.type||'三合一疫苗';document.getElementById('editVacDate').value=v.date||'';document.getElementById('editVacNext').value=v.nextDate||'';document.getElementById('editVacNote').value=v.note||'';document.getElementById('overlayVac').classList.add('show');document.getElementById('panelVac').classList.add('show');}
 function closeEditVac(){document.getElementById('overlayVac').classList.remove('show');document.getElementById('panelVac').classList.remove('show');editingVacIndex=-1;}
-function updateVac(){
-    if(editingVacIndex<0)return;
-    var v=data.vaccine[editingVacIndex];
-    v.type=document.getElementById('editVacType').value;v.date=document.getElementById('editVacDate').value;
-    v.nextDate=document.getElementById('editVacNext').value;v.note=document.getElementById('editVacNote').value;
-    save();closeEditVac();showVaccineList();checkVaccineNotif();alert('✅ 疫苗記錄已更新！');
-}
+function updateVac(){if(editingVacIndex<0)return;var v=data.vaccine[editingVacIndex];v.type=document.getElementById('editVacType').value;v.date=document.getElementById('editVacDate').value;v.nextDate=document.getElementById('editVacNext').value;v.note=document.getElementById('editVacNote').value;save();closeEditVac();showVaccineList();checkVaccineNotif();alert('✅ 疫苗記錄已更新！');}
 function deleteVac(id){if(!confirm('確定刪除？'))return;data.vaccine=data.vaccine.filter(function(v){return v.id!==id;});save();showVaccineList();checkVaccineNotif();}
-function showVaccineList(){
-    var container=document.getElementById('vaccineList');
-    if(!data.vaccine.length){container.innerHTML='<div class="empty"><span>💉</span><p>還沒有記錄</p></div>';return;}
-    var fi=document.getElementById('vacCat').value,fc=data.cats[fi],now=new Date(),latest={};
-    data.vaccine.forEach(function(v){if(fc&&v.catId!==fc.id)return;var k=v.catName+'_'+v.type;if(!latest[k]||v.date>latest[k].date)latest[k]=v;});
-    var html='';
-    for(var k in latest){
-        var v=latest[k],dl=Math.ceil((new Date(v.nextDate)-now)/86400000),sc,st,cc;
-        if(dl<0){sc='status-overdue';st='⚠️ 已過期'+Math.abs(dl)+'天！';cc='overdue';}else if(dl<=7){sc='status-upcoming';st='⏰ '+dl+'天後到期';cc='upcoming';}else{sc='status-ok';st='✅ 還有'+dl+'天';cc='ok';}
-        html+='<div class="vaccine-card '+cc+'"><div class="vaccine-title">'+v.type+'</div><span class="cat-badge">🐱 '+v.catName+'</span>'+
-            '<div class="vaccine-date">上次：'+v.date+'</div><div class="vaccine-date">下次：'+v.nextDate+'</div>'+
-            '<span class="vaccine-status '+sc+'">'+st+'</span>'+(v.note?'<div style="color:#666;font-size:13px;margin-top:4px">📝 '+v.note+'</div>':'')+
-            '<div class="record-actions"><button class="btn-edit" onclick="openEditVac('+v.id+')">✏️ 編輯</button>'+
-            '<button class="btn-del" onclick="deleteVac('+v.id+')">🗑️ 刪除</button></div></div>';
-    }
-    html+='<h3 style="margin-top:15px;color:#666">📜 完整記錄</h3>';
-    data.vaccine.slice().sort(function(a,b){return b.date.localeCompare(a.date);}).forEach(function(v){
-        if(fc&&v.catId!==fc.id)return;
-        html+='<div class="record-item"><div class="title">'+v.type+'</div><span class="cat-badge">🐱 '+v.catName+'</span>'+
-            '<div class="date">施打：'+v.date+' → 下次：'+v.nextDate+'</div>'+(v.note?'<div class="note">'+v.note+'</div>':'')+
-            '<div class="record-actions"><button class="btn-edit" onclick="openEditVac('+v.id+')">✏️ 編輯</button>'+
-            '<button class="btn-del" onclick="deleteVac('+v.id+')">🗑️ 刪除</button></div></div>';
-    });
-    container.innerHTML=html;
-}
-function checkVaccineNotif(){
-    var now=new Date(),latest={};
-    data.vaccine.forEach(function(v){var k=v.catId+'_'+v.type;if(!latest[k]||v.date>latest[k].date)latest[k]=v;});
-    var alerts=[];
-    for(var k in latest){var v=latest[k],dl=Math.ceil((new Date(v.nextDate)-now)/86400000);if(dl<0)alerts.push('🚨 '+v.catName+' 的 '+v.type+' 已過期'+Math.abs(dl)+'天！');else if(dl<=7)alerts.push('⏰ '+v.catName+' 的 '+v.type+' 還有'+dl+'天到期');}
-    var banner=document.getElementById('notifBanner');
-    if(alerts.length){document.getElementById('notifContent').innerHTML=alerts.map(function(a){return'<div class="notif-item">'+a+'</div>';}).join('');banner.classList.add('show');}else banner.classList.remove('show');
-}
+function showVaccineList(){var container=document.getElementById('vaccineList');if(!data.vaccine.length){container.innerHTML='<div class="empty"><span>💉</span><p>還沒有記錄</p></div>';return;}var fi=document.getElementById('vacCat').value,fc=data.cats[fi],now=new Date(),latest={};data.vaccine.forEach(function(v){if(fc&&v.catId!==fc.id)return;var k=v.catName+'_'+v.type;if(!latest[k]||v.date>latest[k].date)latest[k]=v;});var html='';for(var k in latest){var v=latest[k],dl=Math.ceil((new Date(v.nextDate)-now)/86400000),sc,st,cc;if(dl<0){sc='status-overdue';st='⚠️ 已過期'+Math.abs(dl)+'天！';cc='overdue';}else if(dl<=7){sc='status-upcoming';st='⏰ '+dl+'天後到期';cc='upcoming';}else{sc='status-ok';st='✅ 還有'+dl+'天';cc='ok';}html+='<div class="vaccine-card '+cc+'"><div class="vaccine-title">'+v.type+'</div><span class="cat-badge">🐱 '+v.catName+'</span><div class="vaccine-date">上次：'+v.date+'</div><div class="vaccine-date">下次：'+v.nextDate+'</div><span class="vaccine-status '+sc+'">'+st+'</span>'+(v.note?'<div style="color:#666;font-size:13px;margin-top:4px">📝 '+v.note+'</div>':'')+'<div class="record-actions"><button class="btn-edit" onclick="openEditVac('+v.id+')">✏️ 編輯</button><button class="btn-del" onclick="deleteVac('+v.id+')">🗑️ 刪除</button></div></div>';}html+='<h3 style="margin-top:15px;color:#666">📜 完整記錄</h3>';data.vaccine.slice().sort(function(a,b){return b.date.localeCompare(a.date);}).forEach(function(v){if(fc&&v.catId!==fc.id)return;html+='<div class="record-item"><div class="title">'+v.type+'</div><span class="cat-badge">🐱 '+v.catName+'</span><div class="date">施打：'+v.date+' → 下次：'+v.nextDate+'</div>'+(v.note?'<div class="note">'+v.note+'</div>':'')+'<div class="record-actions"><button class="btn-edit" onclick="openEditVac('+v.id+')">✏️ 編輯</button><button class="btn-del" onclick="deleteVac('+v.id+')">🗑️ 刪除</button></div></div>';});container.innerHTML=html;}
+function checkVaccineNotif(){var now=new Date(),latest={};data.vaccine.forEach(function(v){var k=v.catId+'_'+v.type;if(!latest[k]||v.date>latest[k].date)latest[k]=v;});var alerts=[];for(var k in latest){var v=latest[k],dl=Math.ceil((new Date(v.nextDate)-now)/86400000);if(dl<0)alerts.push('🚨 '+v.catName+' 的 '+v.type+' 已過期'+Math.abs(dl)+'天！');else if(dl<=7)alerts.push('⏰ '+v.catName+' 的 '+v.type+' 還有'+dl+'天到期');}var banner=document.getElementById('notifBanner');if(alerts.length){document.getElementById('notifContent').innerHTML=alerts.map(function(a){return'<div class="notif-item">'+a+'</div>';}).join('');banner.classList.add('show');}else banner.classList.remove('show');}
 
 // ============ DIARY ============
 var diaryPhotos=[];
-function previewDiary(){
-    var input=document.getElementById('diaryFile'),preview=document.getElementById('diaryPreview');
-    preview.innerHTML='';diaryPhotos=[];
-    if(!input.files)return;
-    for(var i=0;i<input.files.length;i++){(function(file){var reader=new FileReader();reader.onload=function(e){diaryPhotos.push(e.target.result);preview.innerHTML+='<img src="'+e.target.result+'" style="width:60px;height:60px;object-fit:cover;border-radius:6px">';};reader.readAsDataURL(file);})(input.files[i]);}
-}
-function saveDiary(){
-    var text=document.getElementById('diaryText').value.trim();
-    if(!text){alert('請寫內容！');return;}
-    data.diary.push({id:Date.now(),date:document.getElementById('diaryDate').value||new Date().toISOString().split('T')[0],text:text,photos:diaryPhotos.slice(0,4)});
-    save();document.getElementById('diaryDate').value=new Date().toISOString().split('T')[0];document.getElementById('diaryText').value='';document.getElementById('diaryFile').value='';document.getElementById('diaryPreview').innerHTML='';diaryPhotos=[];
-    showDiaryList();alert('✅ 日記已儲存！');
-}
-function openEditDiary(id){
-    editingDiaryIndex=-1;
-    for(var i=0;i<data.diary.length;i++){if(data.diary[i].id===id){editingDiaryIndex=i;break;}}
-    if(editingDiaryIndex<0)return;
-    var d=data.diary[editingDiaryIndex];
-    document.getElementById('editDiaryDate').value=d.date||'';
-    document.getElementById('editDiaryText').value=d.text||'';
-    document.getElementById('overlayDiary').classList.add('show');document.getElementById('panelDiary').classList.add('show');
-}
+function previewDiary(){var input=document.getElementById('diaryFile'),preview=document.getElementById('diaryPreview');preview.innerHTML='';diaryPhotos=[];if(!input.files)return;for(var i=0;i<input.files.length;i++){(function(file){var reader=new FileReader();reader.onload=function(e){diaryPhotos.push(e.target.result);preview.innerHTML+='<img src="'+e.target.result+'" style="width:60px;height:60px;object-fit:cover;border-radius:6px">';};reader.readAsDataURL(file);})(input.files[i]);}}
+function saveDiary(){var text=document.getElementById('diaryText').value.trim();if(!text){alert('請寫內容！');return;}data.diary.push({id:Date.now(),date:document.getElementById('diaryDate').value||new Date().toISOString().split('T')[0],text:text,photos:diaryPhotos.slice(0,4)});save();document.getElementById('diaryDate').value=new Date().toISOString().split('T')[0];document.getElementById('diaryText').value='';document.getElementById('diaryFile').value='';document.getElementById('diaryPreview').innerHTML='';diaryPhotos=[];showDiaryList();alert('✅ 日記已儲存！');}
+function openEditDiary(id){editingDiaryIndex=-1;for(var i=0;i<data.diary.length;i++){if(data.diary[i].id===id){editingDiaryIndex=i;break;}}if(editingDiaryIndex<0)return;var d=data.diary[editingDiaryIndex];document.getElementById('editDiaryDate').value=d.date||'';document.getElementById('editDiaryText').value=d.text||'';document.getElementById('overlayDiary').classList.add('show');document.getElementById('panelDiary').classList.add('show');}
 function closeEditDiary(){document.getElementById('overlayDiary').classList.remove('show');document.getElementById('panelDiary').classList.remove('show');editingDiaryIndex=-1;}
-function updateDiary(){
-    if(editingDiaryIndex<0)return;
-    var d=data.diary[editingDiaryIndex];
-    d.date=document.getElementById('editDiaryDate').value;d.text=document.getElementById('editDiaryText').value.trim();
-    if(!d.text){alert('請寫內容！');return;}
-    save();closeEditDiary();showDiaryList();alert('✅ 日記已更新！');
-}
-function deleteDiary(id){if(!confirm('確定刪除？'))return;data.diary=data.diary.filter(function(d){return d.id!==id;});save();showDiaryList();}
-function showDiaryList(){
-    var el=document.getElementById('diaryList');
-    if(!data.diary.length){el.innerHTML='<div class="empty"><span>📔</span><p>還沒有日記</p></div>';return;}
-    el.innerHTML=data.diary.slice().reverse().map(function(d){
-        var photos=d.photos&&d.photos.length?'<div class="diary-photos">'+d.photos.map(function(p){return'<img src="'+p+'">';}).join('')+'</div>':'';
-        return'<div style="margin-bottom:15px;padding-bottom:15px;border-bottom:2px dashed #f0e0d6">'+
-            '<div style="color:#ff6b9d;font-weight:bold;margin-bottom:5px">📅 '+d.date+'</div>'+photos+
-            '<div style="line-height:1.6">'+d.text+'</div>'+
-            '<div class="record-actions"><button class="btn-edit" onclick="openEditDiary('+d.id+')">✏️ 編輯</button>'+
-            '<button class="btn-del" onclick="deleteDiary('+d.id+')">🗑️ 刪除</button></div></div>';
-    }).join('');
-}
+function updateDiary(){if(editingDiaryIndex<0)return;var d=data.diary[editingDiaryIndex];d.date=document.getElementById('editDiaryDate').value;d.text=document.getElementById('editDiaryText').value.trim();if(!d.text){alert('請寫內容！');return;}save();closeEditDiary();showDiaryList();alert('✅ 日記已更新！');}
+function deleteDiary(id){if(!confirm('確定刪除此日記？'))return;data.diary=data.diary.filter(function(d){return d.id!==id;});save();showDiaryList();}
+function showDiaryList(){var el=document.getElementById('diaryList');if(!data.diary.length){el.innerHTML='<div class="empty"><span>📔</span><p>還沒有日記</p></div>';return;}el.innerHTML=data.diary.slice().reverse().map(function(d){var photos=d.photos&&d.photos.length?'<div class="diary-photos">'+d.photos.map(function(p){return'<img src="'+p+'">';}).join('')+'</div>':'';return'<div style="margin-bottom:15px;padding-bottom:15px;border-bottom:2px dashed #f0e0d6"><div style="color:#ff6b9d;font-weight:bold;margin-bottom:5px">📅 '+d.date+'</div>'+photos+'<div style="line-height:1.6">'+d.text+'</div><div class="record-actions"><button class="btn-edit" onclick="openEditDiary('+d.id+')">✏️ 編輯</button><button class="btn-del" onclick="deleteDiary('+d.id+')">🗑️ 刪除</button></div></div>';}).join('');}
 
 // ============ SETTINGS ============
-function showSettings(){
-    var el=document.getElementById('manageCats');
-    el.innerHTML=data.cats.length?data.cats.map(function(c,i){return'<div class="settings-row"><span>🐱 '+c.name+'</span><div><button class="btn-edit" onclick="openEditPanel('+i+')" style="margin-right:5px">✏️</button><button class="btn-small" style="background:#ff4444;font-size:12px" onclick="deleteCat('+i+')">🗑️</button></div></div>';}).join(''):'<div class="empty"><span>🐱</span><p>還沒有貓咪</p></div>';
-}
+function showSettings(){var el=document.getElementById('manageCats');el.innerHTML=data.cats.length?data.cats.map(function(c,i){return'<div class="settings-row"><span>🐱 '+c.name+'</span><div><button class="btn-edit" onclick="openEditPanel('+i+')" style="margin-right:5px">✏️</button><button class="btn-small" style="background:#ff4444;font-size:12px" onclick="deleteCat('+i+')">🗑️</button></div></div>';}).join(''):'<div class="empty"><span>🐱</span><p>還沒有貓咪</p></div>';}
 function deleteCat(i){if(confirm('確定刪除 '+data.cats[i].name+'？')){var id=data.cats[i].id;data.cats.splice(i,1);['toilet','hospital','food','vaccine','abnormal'].forEach(function(k){data[k]=data[k].filter(function(r){return r.catId!==id;});});data.ci=0;save();showProfile();showSettings();}}
 function exportAll(){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));a.download='cat-care-backup.json';a.click();}
 function clearAll(){if(confirm('⚠️ 確定清除所有資料？無法復原！')){localStorage.removeItem('cc3');location.reload();}}
 
 // ============ HELPERS ============
-function fillSelects(){
-    ['toiletCat','hospCat','foodCat','vacCat','abnCat'].forEach(function(id){
-        var sel=document.getElementById(id);if(!sel)return;
-        sel.innerHTML=data.cats.map(function(c,i){return'<option value="'+i+'">🐱 '+c.name+'</option>';}).join('');
-    });
-}
-function setToiletDateTime(){
-    var n=new Date();
-    document.getElementById('toiletDate').value=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0')+'T'+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
-}
+function fillSelects(){['toiletCat','hospCat','foodCat','vacCat','abnCat'].forEach(function(id){var sel=document.getElementById(id);if(!sel)return;sel.innerHTML=data.cats.map(function(c,i){return'<option value="'+i+'">🐱 '+c.name+'</option>';}).join('');});}
+function setToiletDateTime(){var n=new Date();document.getElementById('toiletDate').value=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0')+'T'+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');}
 
 // ============ INIT ============
 (function init(){
