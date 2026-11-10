@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cat Care App</title>
 
-    <!-- ✅ Firebase SDK（必須有這兩行才能同步）-->
+    <!-- ✅ Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -42,13 +42,21 @@
         .btn-del { width: auto; padding: 6px 14px; font-size: 13px; background: #ff4444; color: white; border: none; border-radius: 8px; cursor: pointer; }
         .btn-green { background: #4caf50; }
         .record-actions { display: flex; gap: 8px; margin-top: 8px; }
-        .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
-        .info-row .label { color: #999; font-weight: bold; }
-        .info-row .value { color: #333; }
-        .profile-photo { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #ff6b9d; display: block; margin: 0 auto 10px; }
-        .profile-name { text-align: center; font-size: 24px; font-weight: bold; color: #333; }
-        .profile-age { text-align: center; color: #ff6b9d; margin-bottom: 5px; }
-        .edit-btn-area { text-align: center; margin-bottom: 15px; }
+        /* ✅ 輪廓可編輯行樣式 */
+        .info-row-edit { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f5f5f5; gap: 8px; }
+        .info-row-edit .lbl { color: #999; font-weight: bold; font-size: 14px; min-width: 70px; }
+        .info-row-edit input, .info-row-edit select { flex: 1; padding: 6px 10px; border: 1.5px solid #f0e0d6; border-radius: 8px; font-size: 14px; }
+        .info-row-edit input:focus, .info-row-edit select:focus { border-color: #ff6b9d; outline: none; }
+        .profile-photo-wrap { text-align: center; margin-bottom: 10px; position: relative; display: inline-block; cursor: pointer; }
+        .profile-photo { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #ff6b9d; display: block; }
+        .profile-photo-placeholder { width: 100px; height: 100px; border-radius: 50%; background: #f0e0d6; display: flex; align-items: center; justify-content: center; font-size: 40px; border: 3px dashed #ff6b9d; cursor: pointer; }
+        .photo-edit-hint { font-size: 11px; color: #ff6b9d; margin-top: 4px; }
+        .profile-name-input { text-align: center; font-size: 22px; font-weight: bold; color: #333; border: none; border-bottom: 2px solid #f0e0d6; background: transparent; width: 100%; padding: 4px 0; margin: 8px 0; }
+        .profile-name-input:focus { outline: none; border-bottom-color: #ff6b9d; }
+        .profile-center { text-align: center; }
+        .save-profile-btn { background: linear-gradient(135deg, #ff6b9d, #ff8a65); color: white; border: none; border-radius: 10px; padding: 10px 30px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 12px; }
+        .save-profile-btn:hover { opacity: 0.9; }
+        .profile-saved-msg { color: #4caf50; font-size: 13px; text-align: center; margin-top: 6px; display: none; }
         .cat-tabs { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; }
         .cat-tab { padding: 6px 16px; border-radius: 20px; border: 2px solid #ff6b9d; background: white; color: #ff6b9d; cursor: pointer; white-space: nowrap; font-weight: bold; font-size: 14px; }
         .cat-tab.active { background: #ff6b9d; color: white; }
@@ -147,12 +155,16 @@
     <div id="notifContent"></div>
 </div>
 
-<!-- PAGE 1: PROFILE -->
+<!-- PAGE 1: PROFILE ✅ 完全可編輯 -->
 <div class="page active" id="page-profile">
     <div class="cat-tabs" id="catTabs"></div>
+
+    <!-- ✅ 輪廓編輯卡片 -->
     <div class="card" id="profileCard">
         <div class="empty"><span>🐱</span><p>點擊 ➕ 添加您的貓咪</p></div>
     </div>
+
+    <!-- 體重記錄 -->
     <div class="card" id="weightCard" style="display:none">
         <h2>⚖️ 體重記錄</h2>
         <div class="weight-row">
@@ -163,6 +175,7 @@
         <div class="line-chart-container" id="lineChartContainer"></div>
         <div id="weightHistoryList" style="margin-top:10px"></div>
     </div>
+
     <div class="card" id="profileHospital" style="display:none">
         <h2>🏥 就診歷史</h2>
         <div id="profileHospitalList"></div>
@@ -403,7 +416,7 @@
     <button onclick="goPage('settings',this)"><span>⚙️</span>設定</button>
 </div>
 
-<!-- ADD/EDIT CAT PANEL -->
+<!-- ADD CAT PANEL -->
 <div class="overlay" id="overlay" onclick="closePanel()"></div>
 <div class="panel" id="panel">
     <div class="panel-top">
@@ -625,7 +638,7 @@ var editOpts = { poopType:'normal', poopColor:'brown', peeSize:'normal', peeColo
 var dailyTabFilter = 'all';
 var analyticsDays = 7;
 
-// ✅ 儲存到本地 + Firebase
+// ✅ Firebase 儲存
 function save() {
     localStorage.setItem('cc3', JSON.stringify(data));
     if (isReady) {
@@ -675,7 +688,7 @@ function pickEditOpt(key, val, el) {
     el.classList.add('selected');
 }
 
-// ============ CAT PANEL ============
+// ============ ADD CAT PANEL ============
 function openAddPanel() {
     editingCatIndex=-1;
     document.getElementById('panelTitle').textContent='🐱 添加貓咪';
@@ -684,24 +697,6 @@ function openAddPanel() {
     document.getElementById('catGender').value='male';
     document.getElementById('catPhoto').value='';
     document.getElementById('catPhotoPreview').innerHTML='';
-    document.getElementById('overlay').classList.add('show');
-    document.getElementById('panel').classList.add('show');
-}
-function openEditPanel(index) {
-    editingCatIndex=index;
-    var c=data.cats[index];
-    document.getElementById('panelTitle').textContent='✏️ 編輯貓咪';
-    document.getElementById('panelSaveBtn').textContent='✅ 更新';
-    document.getElementById('catName').value=c.name;
-    document.getElementById('catBday').value=c.bday||'';
-    document.getElementById('catAdopt').value=c.adopt||'';
-    document.getElementById('catBreed').value=c.breed||'';
-    document.getElementById('catGender').value=c.gender||'male';
-    document.getElementById('catColor').value=c.color||'';
-    document.getElementById('catPhoto').value='';
-    document.getElementById('catPhotoPreview').innerHTML=c.photo?
-        '<img src="'+c.photo+'" style="width:80px;height:80px;border-radius:50%;object-fit:cover">':
-        '<div style="width:80px;height:80px;border-radius:50%;background:#f0e0d6;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:30px">🐱</div>';
     document.getElementById('overlay').classList.add('show');
     document.getElementById('panel').classList.add('show');
 }
@@ -715,35 +710,24 @@ function saveCat() {
     if(!name){alert('請輸入名字！');return;}
     var fileInput=document.getElementById('catPhoto');
     var doSave=function(photo){
-        if(editingCatIndex>=0){
-            var c=data.cats[editingCatIndex];
-            c.name=name; c.bday=document.getElementById('catBday').value;
-            c.adopt=document.getElementById('catAdopt').value;
-            c.breed=document.getElementById('catBreed').value;
-            c.gender=document.getElementById('catGender').value;
-            c.color=document.getElementById('catColor').value;
-            if(photo) c.photo=photo;
-            ['toilet','hospital','food','abnormal','vaccine'].forEach(function(k){
-                for(var i=0;i<data[k].length;i++){if(data[k][i].catId===c.id) data[k][i].catName=name;}
-            });
-            save(); closePanel(); showProfile(); alert('✅ '+name+' 已更新！');
-        } else {
-            data.cats.push({id:Date.now(),name:name,bday:document.getElementById('catBday').value,
-                adopt:document.getElementById('catAdopt').value,breed:document.getElementById('catBreed').value,
-                gender:document.getElementById('catGender').value,color:document.getElementById('catColor').value,
-                photo:photo||'',weights:[]});
-            data.ci=data.cats.length-1;
-            save(); closePanel(); showProfile(); alert('🐱 '+name+' 已添加！');
-        }
+        data.cats.push({id:Date.now(),name:name,
+            bday:document.getElementById('catBday').value,
+            adopt:document.getElementById('catAdopt').value,
+            breed:document.getElementById('catBreed').value,
+            gender:document.getElementById('catGender').value,
+            color:document.getElementById('catColor').value,
+            photo:photo||'',weights:[]});
+        data.ci=data.cats.length-1;
+        save(); closePanel(); showProfile(); alert('🐱 '+name+' 已添加！');
     };
     if(fileInput.files&&fileInput.files[0]){
         var reader=new FileReader();
         reader.onload=function(e){doSave(e.target.result);};
         reader.readAsDataURL(fileInput.files[0]);
-    } else { doSave(editingCatIndex>=0?null:''); }
+    } else { doSave(''); }
 }
 
-// ============ PROFILE ============
+// ============ PROFILE ✅ 完全可編輯 ============
 function showProfile() {
     var tabs=document.getElementById('catTabs'),card=document.getElementById('profileCard');
     tabs.innerHTML='';
@@ -763,25 +747,131 @@ function showProfile() {
         tabs.appendChild(t);
     }
     var c=data.cats[data.ci];
-    var age=c.bday?getAge(c.bday):'未登記';
+    var age=c.bday?getAge(c.bday):'';
     var adoptDays=c.adopt?getAdoptDays(c.adopt):'';
-    var photoHTML=c.photo?'<img class="profile-photo" src="'+c.photo+'">':
-        '<div style="width:100px;height:100px;border-radius:50%;background:#f0e0d6;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:40px">🐱</div>';
     var lastW=c.weights.length>0?c.weights[c.weights.length-1].v+' kg':'未記錄';
-    card.innerHTML=photoHTML+
-        '<div class="profile-name">'+c.name+'</div>'+
-        '<div class="profile-age">'+(c.bday?'🎂 '+age:'')+'</div>'+
+
+    // ✅ 完全可編輯的輪廓頁面
+    card.innerHTML=
+        // 隱藏 file input
+        '<input type="file" id="profilePhotoFile" accept="image/*" style="display:none" onchange="handleProfilePhotoChange()">'+
+        // 照片（可點擊更換）
+        '<div class="profile-center">'+
+        '<div class="profile-photo-wrap" onclick="document.getElementById(\'profilePhotoFile\').click()">'+
+        (c.photo?
+            '<img class="profile-photo" src="'+c.photo+'" id="profilePhotoImg">':
+            '<div class="profile-photo-placeholder" id="profilePhotoImg">🐱</div>')+
+        '</div>'+
+        '<div class="photo-edit-hint">📷 點擊更換照片</div>'+
+        // 名字（可直接編輯）
+        '<input type="text" class="profile-name-input" id="editProfileName" value="'+escHtml(c.name)+'" placeholder="貓咪名字">'+
+        (age?'<div class="profile-age">🎂 '+age+'</div>':'')+
         (adoptDays?'<div class="profile-age">🏠 一起生活了 '+adoptDays+'</div>':'')+
-        '<div class="edit-btn-area"><button class="btn-edit" onclick="openEditPanel('+data.ci+')">✏️ 編輯資料</button></div>'+
-        '<div class="info-row"><span class="label">🎂 生日</span><span class="value">'+(c.bday||'未登記')+'</span></div>'+
-        '<div class="info-row"><span class="label">🏠 收養日</span><span class="value">'+(c.adopt||'未登記')+'</span></div>'+
-        '<div class="info-row"><span class="label">🐾 品種</span><span class="value">'+(c.breed||'未登記')+'</span></div>'+
-        '<div class="info-row"><span class="label">⚧ 性別</span><span class="value">'+(c.gender==='female'?'♀ 母':'♂ 公')+'</span></div>'+
-        '<div class="info-row"><span class="label">🎨 毛色</span><span class="value">'+(c.color||'未登記')+'</span></div>'+
-        '<div class="info-row"><span class="label">⚖️ 體重</span><span class="value">'+lastW+'</span></div>';
+        '</div>'+
+        // 所有欄位均可編輯
+        '<div class="info-row-edit">'+
+        '<span class="lbl">🎂 生日</span>'+
+        '<input type="date" id="editProfileBday" value="'+(c.bday||'')+'">'+
+        '</div>'+
+        '<div class="info-row-edit">'+
+        '<span class="lbl">🏠 收養日</span>'+
+        '<input type="date" id="editProfileAdopt" value="'+(c.adopt||'')+'">'+
+        '</div>'+
+        '<div class="info-row-edit">'+
+        '<span class="lbl">🐾 品種</span>'+
+        '<input type="text" id="editProfileBreed" value="'+escHtml(c.breed||'')+'" placeholder="品種...">'+
+        '</div>'+
+        '<div class="info-row-edit">'+
+        '<span class="lbl">⚧ 性別</span>'+
+        '<select id="editProfileGender">'+
+        '<option value="male"'+(c.gender==='male'?' selected':'')+'>♂ 公</option>'+
+        '<option value="female"'+(c.gender==='female'?' selected':'')+'>♀ 母</option>'+
+        '</select>'+
+        '</div>'+
+        '<div class="info-row-edit">'+
+        '<span class="lbl">🎨 毛色</span>'+
+        '<input type="text" id="editProfileColor" value="'+escHtml(c.color||'')+'" placeholder="毛色...">'+
+        '</div>'+
+        '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f5f5f5;">'+
+        '<span style="color:#999;font-weight:bold">⚖️ 體重</span>'+
+        '<span style="color:#333">'+lastW+'</span>'+
+        '</div>'+
+        // 儲存按鈕
+        '<div class="profile-center">'+
+        '<button class="save-profile-btn" onclick="saveProfileEdits()">💾 儲存資料</button>'+
+        '<div class="profile-saved-msg" id="profileSavedMsg">✅ 已儲存！</div>'+
+        '</div>';
+
     document.getElementById('weightCard').style.display='block';
     drawLineChart(); showWeightHistory(); showProfileHospital(); checkVaccineNotif();
 }
+
+function escHtml(str) {
+    return (str||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ✅ 儲存輪廓編輯
+function saveProfileEdits() {
+    var c=data.cats[data.ci];
+    var newName=document.getElementById('editProfileName').value.trim();
+    if(!newName){alert('名字不能為空！');return;}
+    var oldName=c.name;
+    c.name=newName;
+    c.bday=document.getElementById('editProfileBday').value;
+    c.adopt=document.getElementById('editProfileAdopt').value;
+    c.breed=document.getElementById('editProfileBreed').value;
+    c.gender=document.getElementById('editProfileGender').value;
+    c.color=document.getElementById('editProfileColor').value;
+    // 同步更新其他記錄中的貓咪名字
+    if(newName!==oldName){
+        ['toilet','hospital','food','abnormal','vaccine'].forEach(function(k){
+            for(var i=0;i<data[k].length;i++){if(data[k][i].catId===c.id) data[k][i].catName=newName;}
+        });
+    }
+    save();
+    // 顯示成功訊息
+    var msg=document.getElementById('profileSavedMsg');
+    if(msg){msg.style.display='block';setTimeout(function(){msg.style.display='none';},2000);}
+    // 刷新 tabs
+    var tabs=document.getElementById('catTabs');
+    tabs.innerHTML='';
+    for(var i=0;i<data.cats.length;i++){
+        var t=document.createElement('div');
+        t.className='cat-tab'+(i===data.ci?' active':'');
+        t.textContent='🐱 '+data.cats[i].name;
+        t.setAttribute('data-i',i);
+        t.onclick=function(){data.ci=parseInt(this.getAttribute('data-i'));save();showProfile();};
+        tabs.appendChild(t);
+    }
+    var c2=data.cats[data.ci];
+    var age=c2.bday?getAge(c2.bday):'';
+    var adoptDays=c2.adopt?getAdoptDays(c2.adopt):'';
+    var aEl=document.querySelectorAll('.profile-age');
+    if(aEl.length>0&&age) aEl[0].textContent='🎂 '+age;
+    if(aEl.length>1&&adoptDays) aEl[1].textContent='🏠 一起生活了 '+adoptDays;
+}
+
+// ✅ 更換照片
+function handleProfilePhotoChange() {
+    var input=document.getElementById('profilePhotoFile');
+    if(!input.files||!input.files[0]) return;
+    var reader=new FileReader();
+    reader.onload=function(e){
+        data.cats[data.ci].photo=e.target.result;
+        var img=document.getElementById('profilePhotoImg');
+        if(img){
+            var newImg=document.createElement('img');
+            newImg.className='profile-photo';
+            newImg.id='profilePhotoImg';
+            newImg.src=e.target.result;
+            img.parentNode.replaceChild(newImg,img);
+        }
+        save();
+        showBar('✅ 照片已更新');
+    };
+    reader.readAsDataURL(input.files[0]);
+}
+
 function getAge(bday){var b=new Date(bday),n=new Date();var y=n.getFullYear()-b.getFullYear(),m=n.getMonth()-b.getMonth();if(m<0){y--;m+=12;}return y>0?y+'歲'+m+'個月':m+'個月';}
 function getAdoptDays(d){var diff=Math.floor((new Date()-new Date(d))/86400000);if(diff<0)return '';if(diff<30)return diff+'天';if(diff<365)return Math.floor(diff/30)+'個月'+diff%30+'天';return Math.floor(diff/365)+'年'+Math.floor((diff%365)/30)+'個月';}
 
@@ -950,7 +1040,7 @@ function deleteDiary(id){if(!confirm('確定刪除？'))return;data.diary=data.d
 function showDiaryList(){var el=document.getElementById('diaryList');if(!data.diary.length){el.innerHTML='<div class="empty"><span>📔</span><p>還沒有日記</p></div>';return;}el.innerHTML=data.diary.slice().reverse().map(function(d){var photos=d.photos&&d.photos.length?'<div class="diary-photos">'+d.photos.map(function(p){return'<img src="'+p+'">';}).join('')+'</div>':'';return'<div style="margin-bottom:15px;padding-bottom:15px;border-bottom:2px dashed #f0e0d6"><div style="color:#ff6b9d;font-weight:bold;margin-bottom:5px">📅 '+d.date+'</div>'+photos+'<div style="line-height:1.6">'+d.text+'</div><div class="record-actions"><button class="btn-edit" onclick="openEditDiary('+d.id+')">✏️ 編輯</button><button class="btn-del" onclick="deleteDiary('+d.id+')">🗑️ 刪除</button></div></div>';}).join('');}
 
 // ============ SETTINGS ============
-function showSettings(){var el=document.getElementById('manageCats');el.innerHTML=data.cats.length?data.cats.map(function(c,i){return'<div class="settings-row"><span>🐱 '+c.name+'</span><div><button class="btn-edit" onclick="openEditPanel('+i+')" style="margin-right:5px">✏️</button><button class="btn-small" style="background:#ff4444;font-size:12px" onclick="deleteCat('+i+')">🗑️</button></div></div>';}).join(''):'<div class="empty"><span>🐱</span><p>還沒有貓咪</p></div>';}
+function showSettings(){var el=document.getElementById('manageCats');el.innerHTML=data.cats.length?data.cats.map(function(c,i){return'<div class="settings-row"><span>🐱 '+c.name+'</span><div><button class="btn-small" style="background:#ff4444;font-size:12px" onclick="deleteCat('+i+')">🗑️ 刪除貓咪</button></div></div>';}).join(''):'<div class="empty"><span>🐱</span><p>還沒有貓咪</p></div>';}
 function deleteCat(i){if(confirm('確定刪除 '+data.cats[i].name+'？')){var id=data.cats[i].id;data.cats.splice(i,1);['toilet','hospital','food','vaccine','abnormal'].forEach(function(k){data[k]=data[k].filter(function(r){return r.catId!==id;});});data.ci=0;save();showProfile();showSettings();}}
 function exportAll(){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));a.download='cat-care-backup.json';a.click();}
 function clearAll(){if(confirm('⚠️ 確定清除所有資料？無法復原！')){localStorage.removeItem('cc3');db.ref('catcare').remove();location.reload();}}
@@ -959,7 +1049,7 @@ function clearAll(){if(confirm('⚠️ 確定清除所有資料？無法復原�
 function fillSelects(){['toiletCat','hospCat','foodCat','vacCat','abnCat'].forEach(function(id){var sel=document.getElementById(id);if(!sel)return;sel.innerHTML=data.cats.map(function(c,i){return'<option value="'+i+'">🐱 '+c.name+'</option>';}).join('');});}
 function setToiletDateTime(){var n=new Date();document.getElementById('toiletDate').value=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0')+'T'+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');}
 
-// ✅ INIT — 從 Firebase 載入數據
+// ✅ INIT — 從 Firebase 載入
 function init(){
     var today=new Date().toISOString().split('T')[0];
     var n=new Date();
@@ -968,7 +1058,6 @@ function init(){
     document.getElementById('toiletDate').value=dtLocal;
     document.getElementById('abnDate').value=dtLocal;
     showBar('🔄 連線中...','loading');
-    // ✅ 即時監聽 Firebase
     db.ref('catcare').on('value',function(snapshot){
         if(snapshot.val()){
             data=snapshot.val();
