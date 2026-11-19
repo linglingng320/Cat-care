@@ -1265,31 +1265,60 @@ function setToiletDateTime(){var n=new Date();document.getElementById('toiletDat
 
 // ✅ INIT
 function init(){
-    var today=new Date().toISOString().split('T')[0];
-    var n=new Date();
-    var dtLocal=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0')+'T'+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
-    ['hospDate','diaryDate','weightDate','foodDate','vacDate','expDate'].forEach(function(id){var el=document.getElementById(id);if(el)el.value=today;});
-    document.getElementById('toiletDate').value=dtLocal;
-    document.getElementById('abnDate').value=dtLocal;
-    showBar('🔄 連線中...','loading');
-    db.ref('catcare').on('value',function(snapshot){
-        if(snapshot.val()){
-            data=snapshot.val();
-            data.cats=data.cats||[];data.toilet=data.toilet||[];data.hospital=data.hospital||[];
-            data.diary=data.diary||[];data.food=data.food||[];data.vaccine=data.vaccine||[];
-            data.abnormal=data.abnormal||[];data.expense=data.expense||[];data.ci=data.ci||0;
-            data.cats.forEach(function(c){if(!c.weights)c.weights=[];});
-            localStorage.setItem('cc3',JSON.stringify(data));
-        }
-        isReady=true;
-        ensureIds();
-        showBar('✅ 已連線');
-        fillSelects();
-        showProfile();
-        checkVaccineNotif();
-    },function(error){
-        showBar('❌ 連線失敗','error');
-        isReady=true;
+    var today = new Date().toISOString().split('T')[0];
+    var n = new Date();
+    var dtLocal = n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+
+        String(n.getDate()).padStart(2,'0')+'T'+String(n.getHours()).padStart(2,'0')+':'+
+        String(n.getMinutes()).padStart(2,'0');
+
+    ['hospDate','diaryDate','weightDate','foodDate','vacDate','expDate'].forEach(function(id){
+        var el = document.getElementById(id); if(el) el.value = today;
+    });
+    document.getElementById('toiletDate').value = dtLocal;
+    document.getElementById('abnDate').value = dtLocal;
+
+    showBar('🔄 登入中...', 'loading');
+
+    // ✅ Step 1: Authenticate FIRST
+    firebase.auth().signInAnonymously().then(function() {
+        console.log("✅ Anonymous auth successful");
+        showBar('🔄 連線中...', 'loading');
+
+        // ✅ Step 2: THEN connect to database (only after auth)
+        db.ref('catcare').on('value', function(snapshot){
+            if(snapshot.val()){
+                data = snapshot.val();
+                data.cats = data.cats || [];
+                data.toilet = data.toilet || [];
+                data.hospital = data.hospital || [];
+                data.diary = data.diary || [];
+                data.food = data.food || [];
+                data.vaccine = data.vaccine || [];
+                data.abnormal = data.abnormal || [];
+                data.expense = data.expense || [];
+                data.ci = data.ci || 0;
+                data.cats.forEach(function(c){ if(!c.weights) c.weights = []; });
+                localStorage.setItem('cc3', JSON.stringify(data));
+            }
+            isReady = true;
+            ensureIds();
+            showBar('✅ 已連線');
+            fillSelects();
+            showProfile();
+            checkVaccineNotif();
+        }, function(error){
+            showBar('❌ 連線失敗: ' + error.message, 'error');
+            isReady = true;
+            ensureIds();
+            fillSelects();
+            showProfile();
+        });
+
+    }).catch(function(error) {
+        // ✅ Step 3: Handle auth failure (fall back to localStorage)
+        console.error("❌ Auth failed:", error);
+        showBar('❌ 登入失敗: ' + error.message, 'error');
+        isReady = false;
         ensureIds();
         fillSelects();
         showProfile();
