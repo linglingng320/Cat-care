@@ -234,43 +234,6 @@ body{font-family:Arial,sans-serif;background:#fef5f0;padding-bottom:70px}
 
 <div class="overlay" id="overlayExp" onclick="closeEditExp()"></div>
 <div class="panel" id="panelExp"><div class="panel-top"><h2>✏️ 編輯支出</h2><button class="panel-close" onclick="closeEditExp()">✕</button></div><div class="form-group"><label>日期</label><input type="date" id="editExpDate"></div><div class="form-group"><label>類別</label><select id="editExpCat" style="width:100%;padding:10px;border:2px solid #f0e0d6;border-radius:8px"><option value="🍖 食品">🍖食品</option><option value="💊 醫療">💊醫療</option><option value="🎾 玩具">🎾玩具</option><option value="🏠 用品">🏠用品</option><option value="✂️ 美容">✂️美容</option><option value="💉 疫苗">💉疫苗</option><option value="❓ 其他">❓其他</option></select></div><div class="form-group"><label>品項名稱</label><input type="text" id="editExpName" placeholder="品項名稱..."></div><div class="form-group"><label>金額($)</label><input type="number" id="editExpAmount" placeholder="0.00" step="0.01" min="0"></div><div class="form-group"><label>備註</label><input type="text" id="editExpNote" placeholder="備註..."></div><button class="btn" style="background:linear-gradient(135deg,#43a047,#66bb6a)" onclick="updateExp()">✅ 更新支出</button></div>
-<script>
-// ✅ Firebase 配置
-var firebaseConfig = {
-    apiKey: "AIzaSyBaACJW2JaO05JXeUcpnoTsCAdU1zwPSMw",
-    authDomain: "cat-care-c8b8f.firebaseapp.com",
-    databaseURL: "https://cat-care-c8b8f-default-rtdb.firebaseio.com",
-    projectId: "cat-care-c8b8f",
-    storageBucket: "cat-care-c8b8f.firebasestorage.app",
-    messagingSenderId: "1052070008926",
-    appId: "1:1052070008926:web:64d56501c68e70000ffccf"
-};
-firebase.initializeApp(firebaseConfig);
-var db = firebase.database();
-var isReady = false;
-
-function showBar(msg, type) {
-    var bar = document.getElementById('syncBar');
-    bar.textContent = msg;
-    bar.className = 'sync-bar show ' + (type||'');
-    setTimeout(function(){ bar.classList.remove('show'); }, 2500);
-}
-
-// ============ DATA ============
-var data = JSON.parse(localStorage.getItem('cc3') || 'null') || {
-    cats:[], toilet:[], hospital:[], diary:[],
-    food:[], vaccine:[], abnormal:[], expense:[], ci:0
-};
-if(!data.expense) data.expense = [];
-
-var editingCatIndex=-1, editingFoodIndex=-1, editingToiletIndex=-1;
-var editingAbnIndex=-1, editingHospIndex=-1, editingVacIndex=-1;
-var editingDiaryIndex=-1, editingExpIndex=-1;
-var selectedOpts = { poopType:'normal', poopColor:'brown', peeSize:'normal', peeColor:'normal' };
-var editOpts = { poopType:'normal', poopColor:'brown', peeSize:'normal', peeColor:'normal' };
-var dailyTabFilter = 'all';
-var analyticsDays = 7;
-}
 
 <script>
 // ✅ Firebase 配置
@@ -569,7 +532,7 @@ function showProfileHospital(){
     document.getElementById('profileHospitalList').innerHTML=records.slice().reverse().map(function(r){
         return'<div class="hospital-record"><div style="color:#ff6b9d;font-weight:bold">📅 '+r.date+'</div><div style="font-weight:bold">'+r.reason+'</div>'+(r.hospital?'<div style="color:#666">🏥 '+r.hospital+'</div>':'')+(r.note?'<div style="color:#666">📝 '+r.note+'</div>':'')+(r.cost?'<div style="color:#666">💰 $'+r.cost+'</div>':'')+'</div>';
     }).join('');
-}    
+}
 
 
 // ============ FOOD ============
@@ -1423,8 +1386,7 @@ function renderExpenseStats(){
     var maxCat=Math.max.apply(null,Object.values(catTotals).concat([1]));
     var catColors={'🍖 食品':'#ff8a65','💊 醫療':'#ef5350','🎾 玩具':'#7e57c2','🏠 用品':'#42a5f5','✂️ 美容':'#ec407a','💉 疫苗':'#26a69a','❓ 其他':'#8d6e63'};
     var statsHtml='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">'+
-        '<div class="expense-stat-card"><div class="expense-stat-amount">
-```+total.toFixed(2)+'</div><div class="expense-stat-label">總支出</div></div>'+
+        '<div class="expense-stat-card"><div class="expense-stat-amount">$'+total.toFixed(2)+'</div><div class="expense-stat-label">總支出</div></div>'+
         '<div class="expense-stat-card"><div class="expense-stat-amount">'+filtered.length+'</div><div class="expense-stat-label">支出筆數</div></div></div>';
     document.getElementById('expenseStats').innerHTML=statsHtml;
     var chartHtml='<div style="margin-top:4px">';
@@ -1432,8 +1394,7 @@ function renderExpenseStats(){
     sortedCats.forEach(function(cat){
         var pct=maxCat>0?Math.round((catTotals[cat]/maxCat)*100):0;
         var color=catColors[cat]||'#ff6b9d';
-        chartHtml+='<div class="expense-chart-bar"><span class="expense-chart-label">'+cat+'</span><div class="expense-chart-track"><div class="expense-chart-fill" style="width:'+pct+'%;background:'+color+'"></div></div><span class="expense-chart-num">
-```+catTotals[cat].toFixed(2)+'</span></div>';
+        chartHtml+='<div class="expense-chart-bar"><span class="expense-chart-label">'+cat+'</span><div class="expense-chart-track"><div class="expense-chart-fill" style="width:'+pct+'%;background:'+color+'"></div></div><span class="expense-chart-num">$'+catTotals[cat].toFixed(2)+'</span></div>';
     });
     chartHtml+='</div>';
     document.getElementById('expenseCatChart').innerHTML=sortedCats.length?chartHtml:'<p style="color:#ccc;text-align:center;padding:10px;font-size:13px">暫無支出數據</p>';
@@ -1448,8 +1409,7 @@ function showExpenseList(){
     container.innerHTML=filtered.map(function(e){
         var bg=catColors[e.category]||'#f5f5f5';
         var tc=catTextColors[e.category]||'#333';
-        return'<div class="expense-item"><div class="expense-item-left"><div class="expense-item-title">'+e.name+'</div><div class="expense-item-meta">📅 '+e.date+'　🐱 '+e.catName+'</div>'+(e.note?'<div class="expense-item-note">📝 '+e.note+'</div>':'')+'<span class="expense-cat-tag" style="background:'+bg+';color:'+tc+'">'+e.category+'</span></div><div class="expense-item-right"><div class="expense-amount">
-```+parseFloat(e.amount).toFixed(2)+'</div><div class="record-actions" style="justify-content:flex-end;margin-top:6px"><button class="btn-edit" onclick="openEditExp(\''+e.id+'\')">✏️</button><button class="btn-del" onclick="deleteExp(\''+e.id+'\')">🗑️</button></div></div></div>';
+        return'<div class="expense-item"><div class="expense-item-left"><div class="expense-item-title">'+e.name+'</div><div class="expense-item-meta">📅 '+e.date+'　🐱 '+e.catName+'</div>'+(e.note?'<div class="expense-item-note">📝 '+e.note+'</div>':'')+'<span class="expense-cat-tag" style="background:'+bg+';color:'+tc+'">'+e.category+'</span></div><div class="expense-item-right"><div class="expense-amount">$'+parseFloat(e.amount).toFixed(2)+'</div><div class="record-actions" style="justify-content:flex-end;margin-top:6px"><button class="btn-edit" onclick="openEditExp(\''+e.id+'\')">✏️</button><button class="btn-del" onclick="deleteExp(\''+e.id+'\')">🗑️</button></div></div></div>';
     }).join('');
 }
 
@@ -1535,5 +1495,3 @@ init();
 </script>
 </body>
 </html>
-    
-    
