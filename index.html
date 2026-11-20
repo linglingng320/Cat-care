@@ -12,9 +12,20 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,"Noto Sans TC",sans-serif;background:#fff5f0;color:#333;padding-bottom:78px}
+.hidden{display:none!important}
+.auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px;background:linear-gradient(135deg,#ff6b9d,#ff8a65)}
+.auth-card{width:100%;max-width:420px;background:white;border-radius:22px;padding:24px;box-shadow:0 8px 30px rgba(0,0,0,.18)}
+.auth-card h1{text-align:center;color:#ff6b9d;margin-bottom:8px}
+.auth-card p{text-align:center;color:#888;font-size:14px;margin-bottom:18px}
+.auth-tabs{display:flex;background:#fff0f5;border-radius:14px;padding:4px;margin-bottom:14px}
+.auth-tabs button{flex:1;border:0;border-radius:11px;background:transparent;padding:10px;color:#999;font-weight:bold}
+.auth-tabs button.active{background:#ff6b9d;color:white}
 .header{background:linear-gradient(135deg,#ff6b9d,#ff8a65);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:20}
 .header h1{font-size:20px}
-.header button{border:0;background:rgba(255,255,255,.25);color:white;border-radius:10px;padding:8px 12px;font-size:18px}
+.header-right{display:flex;align-items:center;gap:8px}
+.header button{border:0;background:rgba(255,255,255,.25);color:white;border-radius:10px;padding:8px 12px;font-size:14px}
+.header .addbtn{font-size:18px}
+.user-email{font-size:11px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.9}
 .sync{display:none;position:fixed;top:54px;left:0;right:0;z-index:30;color:#fff;background:#4caf50;text-align:center;padding:7px;font-size:13px}
 .sync.show{display:block}.sync.err{background:#f44336}.sync.load{background:#2196f3}
 .page{display:none;max-width:680px;margin:auto;padding:14px}.page.active{display:block}
@@ -24,10 +35,12 @@ h3{font-size:15px;margin:12px 0 8px;color:#666}
 label{display:block;font-size:13px;font-weight:bold;color:#666;margin:10px 0 5px}
 input,select,textarea{width:100%;padding:10px;border:2px solid #f1ded6;border-radius:10px;font-size:15px;background:white}
 textarea{min-height:85px;resize:vertical}
-.btn{width:100%;border:0;border-radius:12px;padding:12px;margin-top:12px;color:white;font-weight:bold;font-size:15px;background:linear-gradient(135deg,#ff6b9d,#ff8a65)}
+.btn{width:100%;border:0;border-radius:12px;padding:12px;margin-top:12px;color:white;font-weight:bold;font-size:15px;background:linear-gradient(135deg,#ff6b9d,#ff8a65);cursor:pointer}
 .btn.green{background:linear-gradient(135deg,#43a047,#66bb6a)}
 .btn.red{background:linear-gradient(135deg,#e53935,#ff7043)}
+.btn.gray{background:#999}
 .btn.small{width:auto;padding:7px 12px;font-size:13px;margin:3px}
+.linkbtn{border:0;background:transparent;color:#ff6b9d;margin-top:12px;width:100%;font-size:14px;cursor:pointer}
 .actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .tabs{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px}
 .tab{white-space:nowrap;border:2px solid #ff6b9d;color:#ff6b9d;background:white;border-radius:20px;padding:7px 14px;font-weight:bold}
@@ -67,188 +80,225 @@ textarea{min-height:85px;resize:vertical}
 <body>
 <div id="sync" class="sync"></div>
 
-<div class="header">
-  <h1>🐱 Cat Care</h1>
-  <button onclick="openCatPanel()">➕</button>
-</div>
+<!-- LOGIN PAGE -->
+<div id="authPage" class="auth-page">
+  <div class="auth-card">
+    <h1>🐱 Cat Care</h1>
+    <p>登入後可同步你的貓咪資料</p>
 
-<div id="page-profile" class="page active">
-  <div id="catTabs" class="tabs"></div>
-  <div id="profileCard" class="card"></div>
-  <div id="weightCard" class="card" style="display:none">
-    <h2>⚖️ 體重記錄</h2>
-    <label>日期</label><input id="wDate" type="date">
-    <label>體重 kg</label><input id="wVal" type="number" step="0.1">
-    <button class="btn" onclick="addWeight()">記錄體重</button>
-    <div id="weightList"></div>
-  </div>
-</div>
-
-<div id="page-daily" class="page">
-  <div id="dailyWarn"></div>
-  <div class="card">
-    <h2>🍽️ 飲食記錄</h2>
-    <label>貓咪</label><select id="foodCat"></select>
-    <label>日期</label><input id="foodDate" type="date">
-    <label>乾糧 g</label><input id="foodDry" type="number" value="0">
-    <label>罐頭 g</label><input id="foodWet" type="number" value="0">
-    <label>飲水 ml</label><input id="foodWater" type="number" value="0">
-    <label>備註</label><input id="foodNote">
-    <button class="btn" onclick="saveFood()">儲存飲食</button>
-  </div>
-
-  <div class="card">
-    <h2>🚽 排泄記錄</h2>
-    <label>貓咪</label><select id="toiletCat"></select>
-    <label>日期時間</label><input id="toiletDate" type="datetime-local">
-    <label>大便次數</label><input id="poopCount" type="number" value="1">
-    <label>大便狀態</label>
-    <select id="poopType">
-      <option value="normal">正常</option>
-      <option value="hard">硬/乾</option>
-      <option value="soft">軟便</option>
-      <option value="diarrhea">腹瀉</option>
-      <option value="blood">帶血</option>
-    </select>
-    <label>尿塊數量</label><input id="peeCount" type="number" value="2">
-    <label>尿液狀態</label>
-    <select id="peeType">
-      <option value="normal">正常</option>
-      <option value="dark">深色</option>
-      <option value="clear">透明</option>
-      <option value="blood">帶血</option>
-    </select>
-    <label>備註</label><input id="toiletNote">
-    <button class="btn" onclick="saveToilet()">儲存排泄</button>
-  </div>
-
-  <div class="card">
-    <h2>📊 日常分析</h2>
-    <div id="dailyStats" class="grid"></div>
-  </div>
-
-  <div class="card">
-    <h2>📋 日常記錄</h2>
-    <div class="tabs">
-      <button class="tab active" onclick="dailyFilter='all';setTab(this);renderDaily()">全部</button>
-      <button class="tab" onclick="dailyFilter='food';setTab(this);renderDaily()">飲食</button>
-      <button class="tab" onclick="dailyFilter='toilet';setTab(this);renderDaily()">排泄</button>
+    <div class="auth-tabs">
+      <button id="loginTab" class="active" onclick="setAuthMode('login')">登入</button>
+      <button id="signupTab" onclick="setAuthMode('signup')">註冊</button>
     </div>
-    <div id="dailyList"></div>
+
+    <label>Email</label>
+    <input id="authEmail" type="email" placeholder="you@example.com">
+
+    <label>密碼</label>
+    <input id="authPassword" type="password" placeholder="至少 6 個字">
+
+    <button id="authSubmitBtn" class="btn" onclick="submitAuth()">登入</button>
+    <button class="linkbtn" onclick="resetPassword()">忘記密碼？寄送重設信</button>
   </div>
 </div>
 
-<div id="page-abnormal" class="page">
-  <div class="card">
-    <h2>⚠️ 異常備忘錄</h2>
-    <label>貓咪</label><select id="abnCat"></select>
-    <label>日期時間</label><input id="abnDate" type="datetime-local">
-    <label>症狀</label>
-    <div id="symptoms" class="pillrow">
-      <button class="pill" onclick="togglePill(this)">🤮嘔吐</button>
-      <button class="pill" onclick="togglePill(this)">😿食慾不振</button>
-      <button class="pill" onclick="togglePill(this)">💩腹瀉</button>
-      <button class="pill" onclick="togglePill(this)">💧頻尿</button>
-      <button class="pill" onclick="togglePill(this)">😴嗜睡</button>
-      <button class="pill" onclick="togglePill(this)">🫁呼吸異常</button>
-      <button class="pill" onclick="togglePill(this)">❓其他</button>
+<!-- APP -->
+<div id="app" class="hidden">
+  <div class="header">
+    <h1>🐱 Cat Care</h1>
+    <div class="header-right">
+      <div id="userEmail" class="user-email"></div>
+      <button class="addbtn" onclick="openCatPanel()">➕</button>
+      <button onclick="logout()">登出</button>
     </div>
-    <label>描述</label><textarea id="abnDesc"></textarea>
-    <button class="btn red" onclick="saveAbn()">儲存異常</button>
   </div>
-  <div class="card"><h2>📋 異常記錄</h2><div id="abnList"></div></div>
-</div>
 
-<div id="page-hospital" class="page">
-  <div class="card">
-    <h2>🏥 醫院就診</h2>
-    <label>貓咪</label><select id="hospCat"></select>
-    <label>日期</label><input id="hospDate" type="date">
-    <label>原因</label><input id="hospReason">
-    <label>醫院</label><input id="hospName">
-    <label>費用</label><input id="hospCost" type="number">
-    <label>備註</label><textarea id="hospNote"></textarea>
-    <button class="btn" onclick="saveHosp()">儲存就診</button>
+  <div id="page-profile" class="page active">
+    <div id="catTabs" class="tabs"></div>
+    <div id="profileCard" class="card"></div>
+    <div id="weightCard" class="card" style="display:none">
+      <h2>⚖️ 體重記錄</h2>
+      <label>日期</label><input id="wDate" type="date">
+      <label>體重 kg</label><input id="wVal" type="number" step="0.1">
+      <button class="btn" onclick="addWeight()">記錄體重</button>
+      <div id="weightList"></div>
+    </div>
   </div>
-  <div class="card"><h2>📋 就診記錄</h2><div id="hospList"></div></div>
-</div>
 
-<div id="page-vaccine" class="page">
-  <div class="card">
-    <h2>💉 疫苗/驅蟲</h2>
-    <label>貓咪</label><select id="vacCat"></select>
-    <label>類型</label>
-    <select id="vacType">
-      <option>三合一疫苗</option>
-      <option>五合一疫苗</option>
-      <option>狂犬病疫苗</option>
-      <option>體內驅蟲</option>
-      <option>體外驅蟲</option>
-      <option>其他</option>
-    </select>
-    <label>日期</label><input id="vacDate" type="date">
-    <label>下次日期，不填會自動計算</label><input id="vacNext" type="date">
-    <label>備註</label><input id="vacNote">
-    <button class="btn green" onclick="saveVac()">儲存疫苗/驅蟲</button>
-  </div>
-  <div class="card"><h2>📋 狀態</h2><div id="vacList"></div></div>
-</div>
+  <div id="page-daily" class="page">
+    <div id="dailyWarn"></div>
+    <div class="card">
+      <h2>🍽️ 飲食記錄</h2>
+      <label>貓咪</label><select id="foodCat"></select>
+      <label>日期</label><input id="foodDate" type="date">
+      <label>乾糧 g</label><input id="foodDry" type="number" value="0">
+      <label>罐頭 g</label><input id="foodWet" type="number" value="0">
+      <label>飲水 ml</label><input id="foodWater" type="number" value="0">
+      <label>備註</label><input id="foodNote">
+      <button class="btn" onclick="saveFood()">儲存飲食</button>
+    </div>
 
-<div id="page-diary" class="page">
-  <div class="card">
-    <h2>📔 日記</h2>
-    <label>日期</label><input id="diaryDate" type="date">
-    <label>內容</label><textarea id="diaryText"></textarea>
-    <button class="btn" onclick="saveDiary()">儲存日記</button>
-  </div>
-  <div class="card"><h2>📖 日記記錄</h2><div id="diaryList"></div></div>
-</div>
+    <div class="card">
+      <h2>🚽 排泄記錄</h2>
+      <label>貓咪</label><select id="toiletCat"></select>
+      <label>日期時間</label><input id="toiletDate" type="datetime-local">
+      <label>大便次數</label><input id="poopCount" type="number" value="1">
+      <label>大便狀態</label>
+      <select id="poopType">
+        <option value="normal">正常</option>
+        <option value="hard">硬/乾</option>
+        <option value="soft">軟便</option>
+        <option value="diarrhea">腹瀉</option>
+        <option value="blood">帶血</option>
+      </select>
+      <label>尿塊數量</label><input id="peeCount" type="number" value="2">
+      <label>尿液狀態</label>
+      <select id="peeType">
+        <option value="normal">正常</option>
+        <option value="dark">深色</option>
+        <option value="clear">透明</option>
+        <option value="blood">帶血</option>
+      </select>
+      <label>備註</label><input id="toiletNote">
+      <button class="btn" onclick="saveToilet()">儲存排泄</button>
+    </div>
 
-<div id="page-expense" class="page">
-  <div class="card">
-    <h2>💰 支出</h2>
-    <label>貓咪</label><select id="expCat"></select>
-    <label>日期</label><input id="expDate" type="date">
-    <label>類別</label>
-    <select id="expCategory">
-      <option>🍖 食品</option>
-      <option>💊 醫療</option>
-      <option>🎾 玩具</option>
-      <option>🏠 用品</option>
-      <option>💉 疫苗</option>
-      <option>❓ 其他</option>
-    </select>
-    <label>品項</label><input id="expName">
-    <label>金額</label><input id="expAmount" type="number" step="0.01">
-    <label>備註</label><input id="expNote">
-    <button class="btn green" onclick="saveExpense()">儲存支出</button>
-  </div>
-  <div class="card"><h2>📊 統計</h2><div id="expStats"></div></div>
-  <div class="card"><h2>📋 支出記錄</h2><div id="expList"></div></div>
-</div>
+    <div class="card">
+      <h2>📊 日常分析</h2>
+      <div id="dailyStats" class="grid"></div>
+    </div>
 
-<div id="page-settings" class="page">
-  <div class="card">
-    <h2>🐱 管理貓咪</h2>
-    <div id="catManage"></div>
-    <button class="btn" onclick="openCatPanel()">新增貓咪</button>
+    <div class="card">
+      <h2>📋 日常記錄</h2>
+      <div class="tabs">
+        <button class="tab active" onclick="dailyFilter='all';setTab(this);renderDaily()">全部</button>
+        <button class="tab" onclick="dailyFilter='food';setTab(this);renderDaily()">飲食</button>
+        <button class="tab" onclick="dailyFilter='toilet';setTab(this);renderDaily()">排泄</button>
+      </div>
+      <div id="dailyList"></div>
+    </div>
   </div>
-  <div class="card">
-    <h2>📦 資料</h2>
-    <button class="btn green" onclick="exportData()">匯出資料</button>
-    <button class="btn red" onclick="clearData()">清除所有資料</button>
-  </div>
-</div>
 
-<div class="nav">
-  <button class="active" onclick="go('profile',this)"><span>📋</span>輪廓</button>
-  <button onclick="go('daily',this)"><span>🍽️</span>日常</button>
-  <button onclick="go('abnormal',this)"><span>⚠️</span>異常</button>
-  <button onclick="go('hospital',this)"><span>🏥</span>醫院</button>
-  <button onclick="go('vaccine',this)"><span>💉</span>疫苗</button>
-  <button onclick="go('diary',this)"><span>📔</span>日記</button>
-  <button onclick="go('expense',this)"><span>💰</span>支出</button>
-  <button onclick="go('settings',this)"><span>⚙️</span>設定</button>
+  <div id="page-abnormal" class="page">
+    <div class="card">
+      <h2>⚠️ 異常備忘錄</h2>
+      <label>貓咪</label><select id="abnCat"></select>
+      <label>日期時間</label><input id="abnDate" type="datetime-local">
+      <label>症狀</label>
+      <div id="symptoms" class="pillrow">
+        <button class="pill" onclick="togglePill(this)">🤮嘔吐</button>
+        <button class="pill" onclick="togglePill(this)">😿食慾不振</button>
+        <button class="pill" onclick="togglePill(this)">💩腹瀉</button>
+        <button class="pill" onclick="togglePill(this)">💧頻尿</button>
+        <button class="pill" onclick="togglePill(this)">😴嗜睡</button>
+        <button class="pill" onclick="togglePill(this)">🫁呼吸異常</button>
+        <button class="pill" onclick="togglePill(this)">❓其他</button>
+      </div>
+      <label>描述</label><textarea id="abnDesc"></textarea>
+      <button class="btn red" onclick="saveAbn()">儲存異常</button>
+    </div>
+    <div class="card"><h2>📋 異常記錄</h2><div id="abnList"></div></div>
+  </div>
+
+  <div id="page-hospital" class="page">
+    <div class="card">
+      <h2>🏥 醫院就診</h2>
+      <label>貓咪</label><select id="hospCat"></select>
+      <label>日期</label><input id="hospDate" type="date">
+      <label>原因</label><input id="hospReason">
+      <label>醫院</label><input id="hospName">
+      <label>費用</label><input id="hospCost" type="number">
+      <label>備註</label><textarea id="hospNote"></textarea>
+      <button class="btn" onclick="saveHosp()">儲存就診</button>
+    </div>
+    <div class="card"><h2>📋 就診記錄</h2><div id="hospList"></div></div>
+  </div>
+
+  <div id="page-vaccine" class="page">
+    <div class="card">
+      <h2>💉 疫苗/驅蟲</h2>
+      <label>貓咪</label><select id="vacCat"></select>
+      <label>類型</label>
+      <select id="vacType">
+        <option>三合一疫苗</option>
+        <option>五合一疫苗</option>
+        <option>狂犬病疫苗</option>
+        <option>體內驅蟲</option>
+        <option>體外驅蟲</option>
+        <option>其他</option>
+      </select>
+      <label>日期</label><input id="vacDate" type="date">
+      <label>下次日期，不填會自動計算</label><input id="vacNext" type="date">
+      <label>備註</label><input id="vacNote">
+      <button class="btn green" onclick="saveVac()">儲存疫苗/驅蟲</button>
+    </div>
+    <div class="card"><h2>📋 狀態</h2><div id="vacList"></div></div>
+  </div>
+
+  <div id="page-diary" class="page">
+    <div class="card">
+      <h2>📔 日記</h2>
+      <label>日期</label><input id="diaryDate" type="date">
+      <label>內容</label><textarea id="diaryText"></textarea>
+      <button class="btn" onclick="saveDiary()">儲存日記</button>
+    </div>
+    <div class="card"><h2>📖 日記記錄</h2><div id="diaryList"></div></div>
+  </div>
+
+  <div id="page-expense" class="page">
+    <div class="card">
+      <h2>💰 支出</h2>
+      <label>貓咪</label><select id="expCat"></select>
+      <label>日期</label><input id="expDate" type="date">
+      <label>類別</label>
+      <select id="expCategory">
+        <option>🍖 食品</option>
+        <option>💊 醫療</option>
+        <option>🎾 玩具</option>
+        <option>🏠 用品</option>
+        <option>💉 疫苗</option>
+        <option>❓ 其他</option>
+      </select>
+      <label>品項</label><input id="expName">
+      <label>金額</label><input id="expAmount" type="number" step="0.01">
+      <label>備註</label><input id="expNote">
+      <button class="btn green" onclick="saveExpense()">儲存支出</button>
+    </div>
+    <div class="card"><h2>📊 統計</h2><div id="expStats"></div></div>
+    <div class="card"><h2>📋 支出記錄</h2><div id="expList"></div></div>
+  </div>
+
+  <div id="page-settings" class="page">
+    <div class="card">
+      <h2>👤 帳號</h2>
+      <div class="row"><span class="k">Email</span><span class="v" id="settingsEmail"></span></div>
+      <button class="btn gray" onclick="resetPassword()">寄送密碼重設信</button>
+      <button class="btn red" onclick="logout()">登出</button>
+    </div>
+
+    <div class="card">
+      <h2>🐱 管理貓咪</h2>
+      <div id="catManage"></div>
+      <button class="btn" onclick="openCatPanel()">新增貓咪</button>
+    </div>
+
+    <div class="card">
+      <h2>📦 資料</h2>
+      <button class="btn green" onclick="exportData()">匯出資料</button>
+      <button class="btn red" onclick="clearData()">清除目前帳號資料</button>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="active" onclick="go('profile',this)"><span>📋</span>輪廓</button>
+    <button onclick="go('daily',this)"><span>🍽️</span>日常</button>
+    <button onclick="go('abnormal',this)"><span>⚠️</span>異常</button>
+    <button onclick="go('hospital',this)"><span>🏥</span>醫院</button>
+    <button onclick="go('vaccine',this)"><span>💉</span>疫苗</button>
+    <button onclick="go('diary',this)"><span>📔</span>日記</button>
+    <button onclick="go('expense',this)"><span>💰</span>支出</button>
+    <button onclick="go('settings',this)"><span>⚙️</span>設定</button>
+  </div>
 </div>
 
 <div id="panelBg" class="panel-bg" onclick="closeCatPanel()"></div>
@@ -281,92 +331,270 @@ var firebaseConfig={
 
 firebase.initializeApp(firebaseConfig);
 var db=firebase.database();
+
+var currentUser=null;
 var userPath=null;
+var userRef=null;
 var ready=false;
 var editCat=-1;
 var dailyFilter="all";
-
-var data=loadLocal();
+var authMode="login";
+var data=emptyData();
 
 function emptyData(){
   return {cats:[],food:[],toilet:[],abnormal:[],hospital:[],vaccine:[],diary:[],expense:[],ci:0};
 }
-function id(){return Date.now()+"_"+Math.random().toString(36).slice(2,10)}
-function arr(v){if(!v)return[];if(Array.isArray(v))return v.filter(Boolean);if(typeof v==="object")return Object.values(v).filter(Boolean);return[]}
+
+function id(){
+  return Date.now()+"_"+Math.random().toString(36).slice(2,10);
+}
+
+function arr(v){
+  if(!v)return[];
+  if(Array.isArray(v))return v.filter(Boolean);
+  if(typeof v==="object")return Object.values(v).filter(Boolean);
+  return[];
+}
+
 function normalize(x){
   x=x||{};
   var d=emptyData();
-  Object.keys(d).forEach(function(k){d[k]=k==="ci"?(parseInt(x[k])||0):arr(x[k])});
+  Object.keys(d).forEach(function(k){
+    d[k]=k==="ci"?(parseInt(x[k])||0):arr(x[k]);
+  });
   if(d.ci>=d.cats.length)d.ci=0;
-  d.cats.forEach(function(c){if(!c.id)c.id=id();c.weights=arr(c.weights)});
+  d.cats.forEach(function(c){
+    if(!c.id)c.id=id();
+    c.weights=arr(c.weights);
+  });
   ["food","toilet","abnormal","hospital","vaccine","diary","expense"].forEach(function(k){
-    d[k].forEach(function(r){if(!r.id)r.id=id()});
+    d[k].forEach(function(r){if(!r.id)r.id=id();});
   });
   return d;
 }
-function loadLocal(){return normalize(JSON.parse(localStorage.getItem("catcare_v1")||"null"))}
-function localSave(){localStorage.setItem("catcare_v1",JSON.stringify(data))}
+
+function storageKey(){
+  return currentUser ? "catcare_v2_"+currentUser.uid : "catcare_v2_guest";
+}
+
+function loadLocal(){
+  return normalize(JSON.parse(localStorage.getItem(storageKey())||"null"));
+}
+
+function localSave(){
+  if(currentUser)localStorage.setItem(storageKey(),JSON.stringify(data));
+}
+
 function bar(msg,type){
   var s=document.getElementById("sync");
-  s.textContent=msg;s.className="sync show "+(type||"");
-  setTimeout(function(){s.classList.remove("show")},2500);
+  s.textContent=msg;
+  s.className="sync show "+(type||"");
+  setTimeout(function(){s.classList.remove("show");},2500);
 }
+
 function save(){
-  data=normalize(data);localSave();
-  if(!ready||!userPath)return;
+  data=normalize(data);
+  localSave();
+
+  if(!ready||!userPath){
+    console.warn("Not ready. Saved locally only.");
+    return;
+  }
+
   db.ref(userPath).set(data,function(e){
-    if(e){console.error(e);bar("❌ 同步失敗: "+e.message,"err")}
-    else bar("✅ 已同步");
+    if(e){
+      console.error(e);
+      bar("❌ 同步失敗: "+e.message,"err");
+    }else{
+      bar("✅ 已同步");
+    }
   });
 }
-function catBySelect(selId){return data.cats[parseInt(document.getElementById(selId).value)||0]}
 
+/* AUTH */
+function setAuthMode(mode){
+  authMode=mode;
+  document.getElementById("loginTab").classList.toggle("active",mode==="login");
+  document.getElementById("signupTab").classList.toggle("active",mode==="signup");
+  document.getElementById("authSubmitBtn").textContent=mode==="login"?"登入":"註冊";
+}
+
+function submitAuth(){
+  var email=document.getElementById("authEmail").value.trim();
+  var pass=document.getElementById("authPassword").value;
+
+  if(!email)return alert("請輸入 Email");
+  if(!pass)return alert("請輸入密碼");
+  if(pass.length<6)return alert("密碼至少 6 個字");
+
+  bar(authMode==="login"?"🔄 登入中...":"🔄 註冊中...","load");
+
+  var p=authMode==="login"
+    ? firebase.auth().signInWithEmailAndPassword(email,pass)
+    : firebase.auth().createUserWithEmailAndPassword(email,pass);
+
+  p.then(function(){
+    bar(authMode==="login"?"✅ 已登入":"✅ 註冊成功");
+  }).catch(function(e){
+    console.error(e);
+    alert(authErrorMsg(e));
+    bar("❌ "+authErrorMsg(e),"err");
+  });
+}
+
+function resetPassword(){
+  var email=document.getElementById("authEmail").value.trim() || (currentUser&&currentUser.email);
+  if(!email)return alert("請先輸入 Email");
+  firebase.auth().sendPasswordResetEmail(email).then(function(){
+    alert("已寄送密碼重設信到 "+email);
+  }).catch(function(e){
+    console.error(e);
+    alert(authErrorMsg(e));
+  });
+}
+
+function logout(){
+  if(!confirm("確定登出？"))return;
+  firebase.auth().signOut();
+}
+
+function authErrorMsg(e){
+  var code=e.code||"";
+  if(code.indexOf("user-not-found")>=0)return "找不到此帳號";
+  if(code.indexOf("wrong-password")>=0)return "密碼錯誤";
+  if(code.indexOf("invalid-email")>=0)return "Email 格式錯誤";
+  if(code.indexOf("email-already-in-use")>=0)return "此 Email 已被註冊";
+  if(code.indexOf("weak-password")>=0)return "密碼太弱，至少 6 個字";
+  if(code.indexOf("too-many-requests")>=0)return "嘗試次數太多，請稍後再試";
+  if(code.indexOf("network-request-failed")>=0)return "網路連線失敗";
+  return e.message||"登入失敗";
+}
+
+function watchAuth(){
+  firebase.auth().onAuthStateChanged(function(user){
+    if(user){
+      currentUser=user;
+      userPath="catcare_users/"+user.uid;
+      ready=false;
+
+      document.getElementById("authPage").classList.add("hidden");
+      document.getElementById("app").classList.remove("hidden");
+      document.getElementById("userEmail").textContent=user.email||"";
+      document.getElementById("settingsEmail").textContent=user.email||"";
+
+      attachUserData();
+    }else{
+      if(userRef)userRef.off();
+      currentUser=null;
+      userPath=null;
+      userRef=null;
+      ready=false;
+      data=emptyData();
+
+      document.getElementById("app").classList.add("hidden");
+      document.getElementById("authPage").classList.remove("hidden");
+    }
+  });
+}
+
+function attachUserData(){
+  if(userRef)userRef.off();
+
+  bar("🔄 讀取資料中...","load");
+  userRef=db.ref(userPath);
+
+  userRef.on("value",function(snap){
+    var remote=snap.val();
+
+    if(remote){
+      data=normalize(remote);
+      localSave();
+    }else{
+      data=loadLocal();
+
+      if(hasAnyData(data)){
+        db.ref(userPath).set(data,function(e){
+          if(e){
+            console.error(e);
+            bar("❌ 初次同步失敗: "+e.message,"err");
+          }
+        });
+      }else{
+        data=emptyData();
+      }
+    }
+
+    ready=true;
+    bar("✅ 已連線");
+    renderAll();
+  },function(e){
+    console.error(e);
+    ready=false;
+    data=loadLocal();
+    bar("❌ 讀取失敗: "+e.message,"err");
+    renderAll();
+  });
+}
+
+function hasAnyData(d){
+  return d.cats.length||d.food.length||d.toilet.length||d.abnormal.length||d.hospital.length||d.vaccine.length||d.diary.length||d.expense.length;
+}
+
+/* APP */
 function initDates(){
   var n=new Date(),today=n.toISOString().split("T")[0];
-  ["foodDate","hospDate","vacDate","diaryDate","expDate","wDate"].forEach(function(i){var e=document.getElementById(i);if(e)e.value=today});
-  var dt=n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0")+"T"+String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0");
-  ["toiletDate","abnDate"].forEach(function(i){var e=document.getElementById(i);if(e)e.value=dt});
-}
-function init(){
-  initDates();renderAll();
-  bar("🔄 登入中...","load");
-  firebase.auth().signInAnonymously().then(function(cred){
-    userPath="catcare_users/"+cred.user.uid;
-    bar("🔄 連線中...","load");
-    db.ref(userPath).on("value",function(s){
-      var remote=s.val();
-      if(remote){data=normalize(remote);localSave()}
-      else save();
-      ready=true;bar("✅ 已連線");renderAll();
-    },function(e){
-      console.error(e);bar("❌ 連線失敗: "+e.message,"err");ready=false;renderAll();
-    });
-  }).catch(function(e){
-    console.error(e);bar("❌ 登入失敗: "+e.message,"err");ready=false;renderAll();
+  ["foodDate","hospDate","vacDate","diaryDate","expDate","wDate"].forEach(function(i){
+    var e=document.getElementById(i);
+    if(e)e.value=today;
   });
+
+  var dt=n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0")+"T"+String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0");
+  ["toiletDate","abnDate"].forEach(function(i){
+    var e=document.getElementById(i);
+    if(e)e.value=dt;
+  });
+}
+
+function catBySelect(selId){
+  return data.cats[parseInt(document.getElementById(selId).value)||0];
 }
 
 function go(name,btn){
-  document.querySelectorAll(".page").forEach(function(p){p.classList.remove("active")});
+  document.querySelectorAll(".page").forEach(function(p){p.classList.remove("active");});
   document.getElementById("page-"+name).classList.add("active");
-  document.querySelectorAll(".nav button").forEach(function(b){b.classList.remove("active")});
+  document.querySelectorAll(".nav button").forEach(function(b){b.classList.remove("active");});
   btn.classList.add("active");
   renderAll();
 }
+
 function setTab(btn){
-  btn.parentElement.querySelectorAll(".tab").forEach(function(b){b.classList.remove("active")});
+  btn.parentElement.querySelectorAll(".tab").forEach(function(b){b.classList.remove("active");});
   btn.classList.add("active");
 }
+
 function renderAll(){
-  fillCats();renderProfile();renderDaily();renderAbn();renderHosp();renderVac();renderDiary();renderExpense();renderSettings();
+  fillCats();
+  renderProfile();
+  renderDaily();
+  renderAbn();
+  renderHosp();
+  renderVac();
+  renderDiary();
+  renderExpense();
+  renderSettings();
 }
+
 function fillCats(){
   ["foodCat","toiletCat","abnCat","hospCat","vacCat","expCat"].forEach(function(idn){
-    var s=document.getElementById(idn);if(!s)return;
-    s.innerHTML=data.cats.map(function(c,i){return '<option value="'+i+'">🐱 '+esc(c.name)+'</option>'}).join("");
+    var s=document.getElementById(idn);
+    if(!s)return;
+    s.innerHTML=data.cats.map(function(c,i){
+      return '<option value="'+i+'">🐱 '+esc(c.name)+'</option>';
+    }).join("");
   });
 }
 
+/* CATS */
 function openCatPanel(i){
   editCat=typeof i==="number"?i:-1;
   var c=editCat>=0?data.cats[editCat]:{};
@@ -381,144 +609,351 @@ function openCatPanel(i){
   document.getElementById("panelBg").classList.add("show");
   document.getElementById("catPanel").classList.add("show");
 }
+
 function closeCatPanel(){
   document.getElementById("panelBg").classList.remove("show");
   document.getElementById("catPanel").classList.remove("show");
 }
+
 function saveCat(){
   var name=document.getElementById("catName").value.trim();
   if(!name)return alert("請輸入名字");
+
   var input=document.getElementById("catPhoto");
+
   var finish=function(photo){
     if(editCat>=0){
       var c=data.cats[editCat];
-      c.name=name;c.bday=val("catBday");c.adopt=val("catAdopt");c.breed=val("catBreed");c.gender=val("catGender");c.color=val("catColor");
+      c.name=name;
+      c.bday=val("catBday");
+      c.adopt=val("catAdopt");
+      c.breed=val("catBreed");
+      c.gender=val("catGender");
+      c.color=val("catColor");
       if(photo)c.photo=photo;
-      ["food","toilet","abnormal","hospital","vaccine","expense"].forEach(function(k){data[k].forEach(function(r){if(r.catId===c.id)r.catName=name})});
+
+      ["food","toilet","abnormal","hospital","vaccine","expense"].forEach(function(k){
+        data[k].forEach(function(r){
+          if(r.catId===c.id)r.catName=name;
+        });
+      });
     }else{
-      data.cats.push({id:id(),name:name,bday:val("catBday"),adopt:val("catAdopt"),breed:val("catBreed"),gender:val("catGender"),color:val("catColor"),photo:photo||"",weights:[]});
+      data.cats.push({
+        id:id(),
+        name:name,
+        bday:val("catBday"),
+        adopt:val("catAdopt"),
+        breed:val("catBreed"),
+        gender:val("catGender"),
+        color:val("catColor"),
+        photo:photo||"",
+        weights:[]
+      });
       data.ci=data.cats.length-1;
     }
-    save();closeCatPanel();renderAll();
+
+    save();
+    closeCatPanel();
+    renderAll();
   };
+
   if(input.files&&input.files[0]){
-    var r=new FileReader();r.onload=function(e){finish(e.target.result)};r.readAsDataURL(input.files[0]);
-  }else finish(null);
-}
-function deleteCat(i){
-  if(!confirm("刪除 "+data.cats[i].name+"？"))return;
-  var cid=data.cats[i].id;data.cats.splice(i,1);
-  ["food","toilet","abnormal","hospital","vaccine","expense"].forEach(function(k){data[k]=data[k].filter(function(r){return r.catId!==cid})});
-  data.ci=0;save();renderAll();
+    var r=new FileReader();
+    r.onload=function(e){finish(e.target.result);};
+    r.readAsDataURL(input.files[0]);
+  }else{
+    finish(null);
+  }
 }
 
+function deleteCat(i){
+  if(!confirm("刪除 "+data.cats[i].name+"？"))return;
+  var cid=data.cats[i].id;
+  data.cats.splice(i,1);
+
+  ["food","toilet","abnormal","hospital","vaccine","expense"].forEach(function(k){
+    data[k]=data[k].filter(function(r){return r.catId!==cid;});
+  });
+
+  data.ci=0;
+  save();
+  renderAll();
+}
+
+/* PROFILE */
 function renderProfile(){
-  var tabs=document.getElementById("catTabs"),card=document.getElementById("profileCard");
+  var tabs=document.getElementById("catTabs");
+  var card=document.getElementById("profileCard");
+  if(!tabs||!card)return;
+
   tabs.innerHTML="";
+
   if(!data.cats.length){
     card.innerHTML='<div class="empty"><span>🐱</span><p>點擊右上角 ➕ 新增貓咪</p></div>';
-    document.getElementById("weightCard").style.display="none";return;
+    document.getElementById("weightCard").style.display="none";
+    return;
   }
+
+  if(data.ci>=data.cats.length)data.ci=0;
+
   data.cats.forEach(function(c,i){
-    var b=document.createElement("button");b.className="tab "+(i===data.ci?"active":"");b.textContent="🐱 "+c.name;
-    b.onclick=function(){data.ci=i;save();renderProfile()};
+    var b=document.createElement("button");
+    b.className="tab "+(i===data.ci?"active":"");
+    b.textContent="🐱 "+c.name;
+    b.onclick=function(){
+      data.ci=i;
+      save();
+      renderProfile();
+    };
     tabs.appendChild(b);
   });
+
   var c=data.cats[data.ci];
   var photo=c.photo?'<img class="photo" src="'+c.photo+'">':'<div class="photoPH">🐱</div>';
   var last=c.weights.length?c.weights[c.weights.length-1].v+" kg":"未記錄";
-  card.innerHTML='<div class="photoBox">'+photo+'</div><div class="catname">'+esc(c.name)+'</div><div class="cat-edit"><button class="btn small" onclick="openCatPanel('+data.ci+')">✏️ 編輯</button></div>'+
-  row("生日",c.bday||"未登記")+row("收養日",c.adopt||"未登記")+row("品種",c.breed||"未登記")+row("性別",c.gender==="female"?"母":"公")+row("毛色",c.color||"未登記")+row("體重",last);
+
+  card.innerHTML=
+    '<div class="photoBox">'+photo+'</div>'+
+    '<div class="catname">'+esc(c.name)+'</div>'+
+    '<div class="cat-edit"><button class="btn small" onclick="openCatPanel('+data.ci+')">✏️ 編輯</button></div>'+
+    row("生日",c.bday||"未登記")+
+    row("收養日",c.adopt||"未登記")+
+    row("品種",c.breed||"未登記")+
+    row("性別",c.gender==="female"?"母":"公")+
+    row("毛色",c.color||"未登記")+
+    row("體重",last);
+
   document.getElementById("weightCard").style.display="block";
   renderWeights();
 }
+
 function addWeight(){
   if(!data.cats.length)return;
-  var v=parseFloat(val("wVal"));if(!v)return alert("請輸入體重");
-  data.cats[data.ci].weights.push({id:id(),date:val("wDate")||new Date().toISOString().split("T")[0],v:v});
-  data.cats[data.ci].weights.sort(function(a,b){return a.date.localeCompare(b.date)});
-  document.getElementById("wVal").value="";save();renderProfile();
+  var v=parseFloat(val("wVal"));
+  if(!v)return alert("請輸入體重");
+
+  data.cats[data.ci].weights.push({
+    id:id(),
+    date:val("wDate")||new Date().toISOString().split("T")[0],
+    v:v
+  });
+
+  data.cats[data.ci].weights.sort(function(a,b){
+    return a.date.localeCompare(b.date);
+  });
+
+  document.getElementById("wVal").value="";
+  save();
+  renderProfile();
 }
-function delWeight(i){data.cats[data.ci].weights.splice(i,1);save();renderProfile()}
+
+function delWeight(i){
+  data.cats[data.ci].weights.splice(i,1);
+  save();
+  renderProfile();
+}
+
 function renderWeights(){
-  var el=document.getElementById("weightList"),c=data.cats[data.ci];
-  if(!c.weights.length){el.innerHTML='<div class="empty">尚無體重記錄</div>';return}
+  var el=document.getElementById("weightList");
+  var c=data.cats[data.ci];
+  if(!el||!c)return;
+
+  if(!c.weights.length){
+    el.innerHTML='<div class="empty">尚無體重記錄</div>';
+    return;
+  }
+
   el.innerHTML=c.weights.slice().reverse().map(function(w,idx){
     var real=c.weights.length-1-idx;
     return '<div class="item"><b>'+w.date+'</b>　<span style="color:#ff6b9d;font-weight:bold">'+w.v+' kg</span><button class="btn small red" onclick="delWeight('+real+')">刪除</button></div>';
   }).join("");
 }
 
+/* DAILY */
 function saveFood(){
   if(!data.cats.length)return alert("請先新增貓咪");
   var c=catBySelect("foodCat");
-  data.food.push({id:id(),catId:c.id,catName:c.name,date:val("foodDate"),dry:num("foodDry"),wet:num("foodWet"),water:num("foodWater"),note:val("foodNote"),time:new Date().toLocaleTimeString("zh-TW",{hour:"2-digit",minute:"2-digit"})});
-  ["foodNote"].forEach(function(i){document.getElementById(i).value=""});
-  save();renderDaily();
+
+  data.food.push({
+    id:id(),
+    catId:c.id,
+    catName:c.name,
+    date:val("foodDate"),
+    dry:num("foodDry"),
+    wet:num("foodWet"),
+    water:num("foodWater"),
+    note:val("foodNote"),
+    time:new Date().toLocaleTimeString("zh-TW",{hour:"2-digit",minute:"2-digit"})
+  });
+
+  document.getElementById("foodNote").value="";
+  save();
+  renderDaily();
 }
+
 function saveToilet(){
   if(!data.cats.length)return alert("請先新增貓咪");
   var c=catBySelect("toiletCat");
-  data.toilet.push({id:id(),catId:c.id,catName:c.name,date:val("toiletDate")||new Date().toISOString(),poop:num("poopCount"),poopType:val("poopType"),pee:num("peeCount"),peeType:val("peeType"),note:val("toiletNote")});
+
+  data.toilet.push({
+    id:id(),
+    catId:c.id,
+    catName:c.name,
+    date:val("toiletDate")||new Date().toISOString(),
+    poop:num("poopCount"),
+    poopType:val("poopType"),
+    pee:num("peeCount"),
+    peeType:val("peeType"),
+    note:val("toiletNote")
+  });
+
   document.getElementById("toiletNote").value="";
-  save();renderDaily();
-}
-function renderDaily(){
-  var food=data.food,toilet=data.toilet;
-  var dry=0,wet=0,water=0,poop=0,pee=0;
-  food.forEach(function(f){dry+=+f.dry||0;wet+=+f.wet||0;water+=+f.water||0});
-  toilet.forEach(function(t){poop+=+t.poop||0;pee+=+t.pee||0});
-  document.getElementById("dailyStats").innerHTML=stat("飲食",food.length+"筆")+stat("排泄",toilet.length+"筆")+stat("飲水",water+"ml")+stat("尿塊",pee+"塊");
-  var all=[];
-  if(dailyFilter==="all"||dailyFilter==="food")food.forEach(function(f){all.push({sort:f.date+" "+(f.time||""),html:'<div class="item"><div class="item-title">🍽️ '+esc(f.catName)+' 飲食</div><div class="meta">'+f.date+' '+(f.time||"")+'</div><div class="note">乾糧 '+f.dry+'g，罐頭 '+f.wet+'g，水 '+f.water+'ml</div>'+note(f.note)+'<button class="btn small red" onclick="delRec(\'food\',\''+f.id+'\')">刪除</button></div>'})});
-  if(dailyFilter==="all"||dailyFilter==="toilet")toilet.forEach(function(t){all.push({sort:t.date,html:'<div class="item"><div class="item-title">🚽 '+esc(t.catName)+' 排泄</div><div class="meta">'+String(t.date).replace("T"," ")+'</div><div class="note">大便 '+t.poop+'次 / '+t.poopType+'，尿塊 '+t.pee+'塊 / '+t.peeType+'</div>'+note(t.note)+'<button class="btn small red" onclick="delRec(\'toilet\',\''+t.id+'\')">刪除</button></div>'})});
-  all.sort(function(a,b){return String(b.sort).localeCompare(String(a.sort))});
-  document.getElementById("dailyList").innerHTML=all.length?all.map(function(x){return x.html}).join(""):'<div class="empty"><span>📋</span>沒有記錄</div>';
-  checkWarn();
-}
-function checkWarn(){
-  var old=Date.now()-2*86400000;
-  var names=data.cats.filter(function(c){
-    var list=data.toilet.filter(function(t){return t.catId===c.id}).sort(function(a,b){return String(b.date).localeCompare(String(a.date))});
-    return list.length&&new Date(list[0].date).getTime()<old;
-  }).map(function(c){return c.name});
-  document.getElementById("dailyWarn").innerHTML=names.length?'<div class="warning">⚠️ '+names.join("、")+' 超過2天沒有排泄記錄</div>':"";
+  save();
+  renderDaily();
 }
 
-function togglePill(b){b.classList.toggle("sel")}
+function renderDaily(){
+  var elStats=document.getElementById("dailyStats");
+  var elList=document.getElementById("dailyList");
+  if(!elStats||!elList)return;
+
+  var food=data.food,toilet=data.toilet;
+  var water=0,pee=0;
+
+  food.forEach(function(f){water+=+f.water||0;});
+  toilet.forEach(function(t){pee+=+t.pee||0;});
+
+  elStats.innerHTML=
+    stat("飲食",food.length+"筆")+
+    stat("排泄",toilet.length+"筆")+
+    stat("飲水",water+"ml")+
+    stat("尿塊",pee+"塊");
+
+  var all=[];
+
+  if(dailyFilter==="all"||dailyFilter==="food"){
+    food.forEach(function(f){
+      all.push({
+        sort:f.date+" "+(f.time||""),
+        html:'<div class="item"><div class="item-title">🍽️ '+esc(f.catName)+' 飲食</div><div class="meta">'+f.date+' '+(f.time||"")+'</div><div class="note">乾糧 '+f.dry+'g，罐頭 '+f.wet+'g，水 '+f.water+'ml</div>'+note(f.note)+'<button class="btn small red" onclick="delRec(\'food\',\''+f.id+'\')">刪除</button></div>'
+      });
+    });
+  }
+
+  if(dailyFilter==="all"||dailyFilter==="toilet"){
+    toilet.forEach(function(t){
+      all.push({
+        sort:t.date,
+        html:'<div class="item"><div class="item-title">🚽 '+esc(t.catName)+' 排泄</div><div class="meta">'+String(t.date).replace("T"," ")+'</div><div class="note">大便 '+t.poop+'次 / '+t.poopType+'，尿塊 '+t.pee+'塊 / '+t.peeType+'</div>'+note(t.note)+'<button class="btn small red" onclick="delRec(\'toilet\',\''+t.id+'\')">刪除</button></div>'
+      });
+    });
+  }
+
+  all.sort(function(a,b){return String(b.sort).localeCompare(String(a.sort));});
+
+  elList.innerHTML=all.length?all.map(function(x){return x.html;}).join(""):'<div class="empty"><span>📋</span>沒有記錄</div>';
+
+  checkWarn();
+}
+
+function checkWarn(){
+  var el=document.getElementById("dailyWarn");
+  if(!el)return;
+
+  var old=Date.now()-2*86400000;
+  var names=data.cats.filter(function(c){
+    var list=data.toilet.filter(function(t){return t.catId===c.id;}).sort(function(a,b){return String(b.date).localeCompare(String(a.date));});
+    return list.length&&new Date(list[0].date).getTime()<old;
+  }).map(function(c){return c.name;});
+
+  el.innerHTML=names.length?'<div class="warning">⚠️ '+names.join("、")+' 超過2天沒有排泄記錄</div>':"";
+}
+
+/* ABNORMAL */
+function togglePill(b){
+  b.classList.toggle("sel");
+}
+
 function saveAbn(){
   if(!data.cats.length)return alert("請先新增貓咪");
   var c=catBySelect("abnCat");
-  var sy=Array.from(document.querySelectorAll("#symptoms .sel")).map(function(b){return b.textContent});
+  var sy=Array.from(document.querySelectorAll("#symptoms .sel")).map(function(b){return b.textContent;});
+
   if(!sy.length)return alert("請選症狀");
-  data.abnormal.push({id:id(),catId:c.id,catName:c.name,date:val("abnDate"),symptoms:sy,desc:val("abnDesc")});
-  document.querySelectorAll("#symptoms .sel").forEach(function(b){b.classList.remove("sel")});
+
+  data.abnormal.push({
+    id:id(),
+    catId:c.id,
+    catName:c.name,
+    date:val("abnDate"),
+    symptoms:sy,
+    desc:val("abnDesc")
+  });
+
+  document.querySelectorAll("#symptoms .sel").forEach(function(b){b.classList.remove("sel");});
   document.getElementById("abnDesc").value="";
-  save();renderAbn();
-}
-function renderAbn(){
-  var el=document.getElementById("abnList");
-  el.innerHTML=data.abnormal.length?data.abnormal.slice().reverse().map(function(r){return '<div class="item"><b>⚠️ '+r.date+'</b><br><span class="badge">'+esc(r.catName)+'</span><div class="note">'+r.symptoms.join("、")+'</div>'+note(r.desc)+'<button class="btn small red" onclick="delRec(\'abnormal\',\''+r.id+'\')">刪除</button></div>'}).join(""):'<div class="empty"><span>✅</span>沒有異常記錄</div>';
+  save();
+  renderAbn();
 }
 
+function renderAbn(){
+  var el=document.getElementById("abnList");
+  if(!el)return;
+
+  el.innerHTML=data.abnormal.length?data.abnormal.slice().reverse().map(function(r){
+    return '<div class="item"><b>⚠️ '+r.date+'</b><br><span class="badge">'+esc(r.catName)+'</span><div class="note">'+r.symptoms.join("、")+'</div>'+note(r.desc)+'<button class="btn small red" onclick="delRec(\'abnormal\',\''+r.id+'\')">刪除</button></div>';
+  }).join(""):'<div class="empty"><span>✅</span>沒有異常記錄</div>';
+}
+
+/* HOSPITAL */
 function saveHosp(){
   if(!data.cats.length)return alert("請先新增貓咪");
   if(!val("hospReason"))return alert("請輸入原因");
+
   var c=catBySelect("hospCat");
-  data.hospital.push({id:id(),catId:c.id,catName:c.name,date:val("hospDate"),reason:val("hospReason"),hospital:val("hospName"),cost:num("hospCost"),note:val("hospNote")});
-  ["hospReason","hospName","hospCost","hospNote"].forEach(function(i){document.getElementById(i).value=""});
-  save();renderHosp();
-}
-function renderHosp(){
-  var el=document.getElementById("hospList");
-  el.innerHTML=data.hospital.length?data.hospital.slice().sort(function(a,b){return String(b.date).localeCompare(String(a.date))}).map(function(r){return '<div class="item"><b>🏥 '+r.date+' '+esc(r.reason)+'</b><br><span class="badge">'+esc(r.catName)+'</span>'+note(r.hospital?"醫院："+r.hospital:"")+note(r.cost?"費用：$"+r.cost:"")+note(r.note)+'<button class="btn small red" onclick="delRec(\'hospital\',\''+r.id+'\')">刪除</button></div>'}).join(""):'<div class="empty"><span>🏥</span>沒有就診記錄</div>';
+
+  data.hospital.push({
+    id:id(),
+    catId:c.id,
+    catName:c.name,
+    date:val("hospDate"),
+    reason:val("hospReason"),
+    hospital:val("hospName"),
+    cost:num("hospCost"),
+    note:val("hospNote")
+  });
+
+  ["hospReason","hospName","hospCost","hospNote"].forEach(function(i){
+    document.getElementById(i).value="";
+  });
+
+  save();
+  renderHosp();
 }
 
+function renderHosp(){
+  var el=document.getElementById("hospList");
+  if(!el)return;
+
+  el.innerHTML=data.hospital.length?data.hospital.slice().sort(function(a,b){
+    return String(b.date).localeCompare(String(a.date));
+  }).map(function(r){
+    return '<div class="item"><b>🏥 '+r.date+' '+esc(r.reason)+'</b><br><span class="badge">'+esc(r.catName)+'</span>'+note(r.hospital?"醫院："+r.hospital:"")+note(r.cost?"費用：$"+r.cost:"")+note(r.note)+'<button class="btn small red" onclick="delRec(\'hospital\',\''+r.id+'\')">刪除</button></div>';
+  }).join(""):'<div class="empty"><span>🏥</span>沒有就診記錄</div>';
+}
+
+/* VACCINE */
 function saveVac(){
   if(!data.cats.length)return alert("請先新增貓咪");
-  var c=catBySelect("vacCat"),type=val("vacType"),date=val("vacDate");
+
+  var c=catBySelect("vacCat");
+  var type=val("vacType");
+  var date=val("vacDate");
+
   if(!date)return alert("請選日期");
+
   var next=val("vacNext");
+
   if(!next){
     var d=new Date(date);
     if(type.indexOf("體外")>=0)d.setMonth(d.getMonth()+1);
@@ -526,73 +961,182 @@ function saveVac(){
     else d.setFullYear(d.getFullYear()+1);
     next=d.toISOString().split("T")[0];
   }
-  data.vaccine.push({id:id(),catId:c.id,catName:c.name,type:type,date:date,next:next,note:val("vacNote")});
-  document.getElementById("vacNext").value="";document.getElementById("vacNote").value="";
-  save();renderVac();
+
+  data.vaccine.push({
+    id:id(),
+    catId:c.id,
+    catName:c.name,
+    type:type,
+    date:date,
+    next:next,
+    note:val("vacNote")
+  });
+
+  document.getElementById("vacNext").value="";
+  document.getElementById("vacNote").value="";
+  save();
+  renderVac();
 }
+
 function renderVac(){
-  var el=document.getElementById("vacList"),now=new Date();
-  el.innerHTML=data.vaccine.length?data.vaccine.slice().sort(function(a,b){return String(a.next).localeCompare(String(b.next))}).map(function(v){
+  var el=document.getElementById("vacList");
+  if(!el)return;
+
+  var now=new Date();
+
+  el.innerHTML=data.vaccine.length?data.vaccine.slice().sort(function(a,b){
+    return String(a.next).localeCompare(String(b.next));
+  }).map(function(v){
     var days=Math.ceil((new Date(v.next)-now)/86400000);
     var msg=days<0?"🚨 已過期 "+Math.abs(days)+" 天":days<=7?"⏰ "+days+" 天後到期":"✅ 還有 "+days+" 天";
     return '<div class="item"><b>'+esc(v.type)+'</b><br><span class="badge">'+esc(v.catName)+'</span><div class="note">上次：'+v.date+'　下次：'+v.next+'</div><div class="note">'+msg+'</div>'+note(v.note)+'<button class="btn small red" onclick="delRec(\'vaccine\',\''+v.id+'\')">刪除</button></div>';
   }).join(""):'<div class="empty"><span>💉</span>沒有疫苗記錄</div>';
 }
 
+/* DIARY */
 function saveDiary(){
   if(!val("diaryText"))return alert("請輸入內容");
-  data.diary.push({id:id(),date:val("diaryDate"),text:val("diaryText")});
+
+  data.diary.push({
+    id:id(),
+    date:val("diaryDate"),
+    text:val("diaryText")
+  });
+
   document.getElementById("diaryText").value="";
-  save();renderDiary();
-}
-function renderDiary(){
-  var el=document.getElementById("diaryList");
-  el.innerHTML=data.diary.length?data.diary.slice().reverse().map(function(d){return '<div class="item"><b>📅 '+d.date+'</b><div class="note">'+esc(d.text)+'</div><button class="btn small red" onclick="delRec(\'diary\',\''+d.id+'\')">刪除</button></div>'}).join(""):'<div class="empty"><span>📔</span>沒有日記</div>';
+  save();
+  renderDiary();
 }
 
+function renderDiary(){
+  var el=document.getElementById("diaryList");
+  if(!el)return;
+
+  el.innerHTML=data.diary.length?data.diary.slice().reverse().map(function(d){
+    return '<div class="item"><b>📅 '+d.date+'</b><div class="note">'+esc(d.text)+'</div><button class="btn small red" onclick="delRec(\'diary\',\''+d.id+'\')">刪除</button></div>';
+  }).join(""):'<div class="empty"><span>📔</span>沒有日記</div>';
+}
+
+/* EXPENSE */
 function saveExpense(){
   if(!data.cats.length)return alert("請先新增貓咪");
   if(!val("expName"))return alert("請輸入品項");
   if(!num("expAmount"))return alert("請輸入金額");
+
   var c=catBySelect("expCat");
-  data.expense.push({id:id(),catId:c.id,catName:c.name,date:val("expDate"),category:val("expCategory"),name:val("expName"),amount:num("expAmount"),note:val("expNote")});
-  ["expName","expAmount","expNote"].forEach(function(i){document.getElementById(i).value=""});
-  save();renderExpense();
-}
-function renderExpense(){
-  var total=data.expense.reduce(function(s,e){return s+(+e.amount||0)},0);
-  var cats={};data.expense.forEach(function(e){cats[e.category]=(cats[e.category]||0)+(+e.amount||0)});
-  var max=Math.max.apply(null,Object.values(cats).concat([1]));
-  document.getElementById("expStats").innerHTML='<div class="grid">'+stat("總支出","$"+total.toFixed(2))+stat("筆數",data.expense.length)+'</div>'+
-  Object.keys(cats).map(function(k){return '<div class="item"><b>'+k+'</b> $'+cats[k].toFixed(2)+'<div class="bar"><i style="width:'+(cats[k]/max*100)+'%"></i></div></div>'}).join("");
-  document.getElementById("expList").innerHTML=data.expense.length?data.expense.slice().sort(function(a,b){return String(b.date).localeCompare(String(a.date))}).map(function(e){return '<div class="item"><b>'+esc(e.name)+' $'+(+e.amount).toFixed(2)+'</b><div class="meta">'+e.date+'　'+esc(e.catName)+'　'+e.category+'</div>'+note(e.note)+'<button class="btn small red" onclick="delRec(\'expense\',\''+e.id+'\')">刪除</button></div>'}).join(""):'<div class="empty"><span>💰</span>沒有支出記錄</div>';
+
+  data.expense.push({
+    id:id(),
+    catId:c.id,
+    catName:c.name,
+    date:val("expDate"),
+    category:val("expCategory"),
+    name:val("expName"),
+    amount:num("expAmount"),
+    note:val("expNote")
+  });
+
+  ["expName","expAmount","expNote"].forEach(function(i){
+    document.getElementById(i).value="";
+  });
+
+  save();
+  renderExpense();
 }
 
-function renderSettings(){
-  document.getElementById("catManage").innerHTML=data.cats.length?data.cats.map(function(c,i){return '<div class="item"><b>🐱 '+esc(c.name)+'</b><div class="actions"><button class="btn small" onclick="openCatPanel('+i+')">編輯</button><button class="btn small red" onclick="deleteCat('+i+')">刪除</button></div></div>'}).join(""):'<div class="empty">沒有貓咪</div>';
+function renderExpense(){
+  var stats=document.getElementById("expStats");
+  var list=document.getElementById("expList");
+  if(!stats||!list)return;
+
+  var total=data.expense.reduce(function(s,e){return s+(+e.amount||0);},0);
+  var cats={};
+
+  data.expense.forEach(function(e){
+    cats[e.category]=(cats[e.category]||0)+(+e.amount||0);
+  });
+
+  var max=Math.max.apply(null,Object.values(cats).concat([1]));
+
+  stats.innerHTML=
+    '<div class="grid">'+stat("總支出","$"+total.toFixed(2))+stat("筆數",data.expense.length)+'</div>'+
+    Object.keys(cats).map(function(k){
+      return '<div class="item"><b>'+k+'</b> $'+cats[k].toFixed(2)+'<div class="bar"><i style="width:'+(cats[k]/max*100)+'%"></i></div></div>';
+    }).join("");
+
+  list.innerHTML=data.expense.length?data.expense.slice().sort(function(a,b){
+    return String(b.date).localeCompare(String(a.date));
+  }).map(function(e){
+    return '<div class="item"><b>'+esc(e.name)+' $'+(+e.amount).toFixed(2)+'</b><div class="meta">'+e.date+'　'+esc(e.catName)+'　'+e.category+'</div>'+note(e.note)+'<button class="btn small red" onclick="delRec(\'expense\',\''+e.id+'\')">刪除</button></div>';
+  }).join(""):'<div class="empty"><span>💰</span>沒有支出記錄</div>';
 }
+
+/* SETTINGS */
+function renderSettings(){
+  var el=document.getElementById("catManage");
+  if(!el)return;
+
+  var se=document.getElementById("settingsEmail");
+  if(se&&currentUser)se.textContent=currentUser.email||"";
+
+  el.innerHTML=data.cats.length?data.cats.map(function(c,i){
+    return '<div class="item"><b>🐱 '+esc(c.name)+'</b><div class="actions"><button class="btn small" onclick="openCatPanel('+i+')">編輯</button><button class="btn small red" onclick="deleteCat('+i+')">刪除</button></div></div>';
+  }).join(""):'<div class="empty">沒有貓咪</div>';
+}
+
 function delRec(k,rid){
   if(!confirm("確定刪除？"))return;
-  data[k]=data[k].filter(function(r){return r.id!==rid});
-  save();renderAll();
+  data[k]=data[k].filter(function(r){return r.id!==rid;});
+  save();
+  renderAll();
 }
+
 function exportData(){
   var a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"}));
-  a.download="cat-care-backup.json";a.click();
+  a.download="cat-care-backup.json";
+  a.click();
 }
+
 function clearData(){
-  if(!confirm("確定清除所有資料？"))return;
-  data=emptyData();localSave();
+  if(!confirm("確定清除此帳號所有資料？"))return;
+  data=emptyData();
+  localSave();
   if(userPath)db.ref(userPath).remove();
   renderAll();
 }
-function val(i){return document.getElementById(i).value}
-function num(i){return parseFloat(val(i))||0}
-function row(k,v){return '<div class="row"><span class="k">'+k+'</span><span class="v">'+esc(v)+'</span></div>'}
-function stat(k,v){return '<div class="stat">'+k+'<b>'+v+'</b></div>'}
-function note(t){return t?'<div class="note">'+esc(t)+'</div>':""}
-function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(m){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])})}
+
+/* HELPERS */
+function val(i){
+  return document.getElementById(i).value;
+}
+
+function num(i){
+  return parseFloat(val(i))||0;
+}
+
+function row(k,v){
+  return '<div class="row"><span class="k">'+k+'</span><span class="v">'+esc(v)+'</span></div>';
+}
+
+function stat(k,v){
+  return '<div class="stat">'+k+'<b>'+v+'</b></div>';
+}
+
+function note(t){
+  return t?'<div class="note">'+esc(t)+'</div>':"";
+}
+
+function esc(s){
+  return String(s==null?"":s).replace(/[&<>"']/g,function(m){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m];
+  });
+}
+
+function init(){
+  initDates();
+  watchAuth();
+}
 
 init();
 </script>
