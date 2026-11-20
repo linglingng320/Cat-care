@@ -234,7 +234,6 @@ body{font-family:Arial,sans-serif;background:#fef5f0;padding-bottom:70px}
 
 <div class="overlay" id="overlayExp" onclick="closeEditExp()"></div>
 <div class="panel" id="panelExp"><div class="panel-top"><h2>✏️ 編輯支出</h2><button class="panel-close" onclick="closeEditExp()">✕</button></div><div class="form-group"><label>日期</label><input type="date" id="editExpDate"></div><div class="form-group"><label>類別</label><select id="editExpCat" style="width:100%;padding:10px;border:2px solid #f0e0d6;border-radius:8px"><option value="🍖 食品">🍖食品</option><option value="💊 醫療">💊醫療</option><option value="🎾 玩具">🎾玩具</option><option value="🏠 用品">🏠用品</option><option value="✂️ 美容">✂️美容</option><option value="💉 疫苗">💉疫苗</option><option value="❓ 其他">❓其他</option></select></div><div class="form-group"><label>品項名稱</label><input type="text" id="editExpName" placeholder="品項名稱..."></div><div class="form-group"><label>金額($)</label><input type="number" id="editExpAmount" placeholder="0.00" step="0.01" min="0"></div><div class="form-group"><label>備註</label><input type="text" id="editExpNote" placeholder="備註..."></div><button class="btn" style="background:linear-gradient(135deg,#43a047,#66bb6a)" onclick="updateExp()">✅ 更新支出</button></div>
-
 <script>
 // ✅ Firebase 配置
 var firebaseConfig = {
@@ -533,7 +532,6 @@ function showProfileHospital(){
         return'<div class="hospital-record"><div style="color:#ff6b9d;font-weight:bold">📅 '+r.date+'</div><div style="font-weight:bold">'+r.reason+'</div>'+(r.hospital?'<div style="color:#666">🏥 '+r.hospital+'</div>':'')+(r.note?'<div style="color:#666">📝 '+r.note+'</div>':'')+(r.cost?'<div style="color:#666">💰 $'+r.cost+'</div>':'')+'</div>';
     }).join('');
 }
-
 
 // ============ FOOD ============
 function saveFood(){
@@ -1037,7 +1035,6 @@ function showHospList(){
     }).join('');
 }
 
-
 // ============ VACCINE ============
 function saveVaccine(){
     if(!data.cats.length){alert('請先添加貓咪！');return;}
@@ -1495,3 +1492,5 @@ init();
 </script>
 </body>
 </html>
+    
+    
