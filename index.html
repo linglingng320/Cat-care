@@ -39,6 +39,7 @@ textarea{min-height:85px;resize:vertical}
 .btn.green{background:linear-gradient(135deg,#43a047,#66bb6a)}
 .btn.red{background:linear-gradient(135deg,#e53935,#ff7043)}
 .btn.gray{background:#999}
+.btn.blue{background:linear-gradient(135deg,#5c6bc0,#42a5f5)}
 .btn.small{width:auto;padding:7px 12px;font-size:13px;margin:3px}
 .linkbtn{border:0;background:transparent;color:#ff6b9d;margin-top:12px;width:100%;font-size:14px;cursor:pointer}
 .actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
@@ -65,15 +66,31 @@ textarea{min-height:85px;resize:vertical}
 .panel-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .close{border:0;background:white;font-size:24px;color:#999}
 .warning{background:#fff3cd;color:#856404;border:1px solid #ffe08a;border-radius:10px;padding:10px;margin-bottom:12px;font-size:13px}
+.info-box{background:#e3f2fd;color:#1565c0;border:1px solid #90caf9;border-radius:10px;padding:10px;margin-bottom:12px;font-size:13px}
 .photo{width:92px;height:92px;border-radius:50%;object-fit:cover;background:#ffe3ed;border:3px solid #f1ded6}
 .photoBox{text-align:center}.photoPH{width:92px;height:92px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#ffe3ed;font-size:42px;margin:auto}
 .catname{text-align:center;font-size:23px;font-weight:bold;margin:8px 0}
 .cat-edit{text-align:center}
 .pillrow{display:flex;gap:6px;flex-wrap:wrap}
-.pill{border:2px solid #eee;border-radius:20px;padding:7px 12px;background:white;font-size:13px}
+.pill{border:2px solid #eee;border-radius:20px;padding:7px 12px;background:white;font-size:13px;cursor:pointer}
 .pill.sel{border-color:#ff6b9d;background:#fff0f5;color:#ff6b9d;font-weight:bold}
 .bar{height:12px;background:#eee;border-radius:10px;overflow:hidden;margin-top:5px}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,#ff6b9d,#ff8a65)}
+.paw-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.paw-card{background:#fff0f5;border:2px solid #ffd2df;border-radius:14px;padding:12px;text-align:center}
+.paw-card.done{background:#e8f5e9;border-color:#a5d6a7}
+.paw-card h4{font-size:14px;margin-bottom:6px;color:#666}
+.paw-card .paw-icon{font-size:28px}
+.paw-check{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.paw-check label{display:flex;align-items:center;gap:3px;font-size:12px;margin:0;font-weight:normal;color:#666}
+.paw-check input[type="checkbox"]{width:auto;margin:0}
+.nail-due{color:#e53935;font-weight:bold}
+.nail-ok{color:#43a047;font-weight:bold}
+.nail-summary{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.nail-tag{display:inline-block;border-radius:12px;padding:3px 10px;font-size:12px;font-weight:bold}
+.nail-tag.done{background:#e8f5e9;color:#2e7d32}
+.nail-tag.skip{background:#fff3e0;color:#e65100}
+.nail-tag.issue{background:#fce4ec;color:#c62828}
 </style>
 </head>
 
@@ -176,6 +193,109 @@ textarea{min-height:85px;resize:vertical}
         <button class="tab" onclick="dailyFilter='toilet';setTab(this);renderDaily()">排泄</button>
       </div>
       <div id="dailyList"></div>
+    </div>
+  </div>
+
+  <!-- NAIL TRIMMING PAGE -->
+  <div id="page-nail" class="page">
+    <div id="nailWarn"></div>
+    <div class="card">
+      <h2>✂️ 修甲記錄</h2>
+      <label>貓咪</label><select id="nailCat"></select>
+      <label>日期</label><input id="nailDate" type="date">
+
+      <label>修剪部位</label>
+      <div class="paw-grid">
+        <div class="paw-card">
+          <div class="paw-icon">🐾</div>
+          <h4>左前掌</h4>
+          <div class="paw-check">
+            <label><input type="checkbox" class="nail-paw" data-paw="LF" value="1">1</label>
+            <label><input type="checkbox" class="nail-paw" data-paw="LF" value="2">2</label>
+            <label><input type="checkbox" class="nail-paw" data-paw="LF" value="3">3</label>
+            <label><input type="checkbox" class="nail-paw" data-paw="LF" value="4">4</label>
+            <label><input type="checkbox" class="nail-paw" data-paw="LF" value="5">5</label>
+          </div>
+        </div>
+        <div class="paw-card">
+          <div class="paw-icon">🐾</div>
+          <h4>右前掌</h4>
+          <div class="paw-check">
+            <label><input type="checkbox" class="nail-paw" data-paw="RF" value="1">1</label>
+            <label><input type="checkbox" class="nail-paw" data-paw="RF" value="2">2</label>
+            <label><input type="checkbox" class="nail-paw" data-paw="RF" value="3">3</label>
+            <label><input type="checkbox" class="nail-paw" data-paw="RF" value="4">4</label>
+            <label><input type="checkbox" class="nail-paw" data-paw="RF" value="5">5</label>
+          </div>
+        </div>
+        <div class="paw-card">
+          <div class="paw-icon">🐾</div>
+          <h4>左後掌</h4>
+          <div class="paw-check">
+            <label><input type="checkbox" class="nail-paw" data-paw="LB" value="1">1</label>
+            <label><input type="checkbox" class="nail-paw" data-paw="LB" value="2">2</label>
+            <label><input type="checkbox" class="nail-paw" data-paw="LB" value="3">3</label>
+            <label><input type="checkbox" class="nail-paw" data-paw="LB" value="4">4</label>
+          </div>
+        </div>
+        <div class="paw-card">
+          <div class="paw-icon">🐾</div>
+          <h4>右後掌</h4>
+          <div class="paw-check">
+            <label><input type="checkbox" class="nail-paw" data-paw="RB" value="1">1</label>
+            <label><input type="checkbox" class="nail-paw" data-paw="RB" value="2">2</label>
+            <label><input type="checkbox" class="nail-paw" data-paw="RB" value="3">3</label>
+            <label><input type="checkbox" class="nail-paw" data-paw="RB" value="4">4</label>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:right;margin-bottom:8px">
+        <button class="btn small" onclick="selectAllNails()" style="display:inline-block;width:auto">全選</button>
+        <button class="btn small gray" onclick="clearAllNails()" style="display:inline-block;width:auto">全不選</button>
+      </div>
+
+      <label>貓咪配合度</label>
+      <select id="nailCoop">
+        <option value="excellent">😊 非常配合</option>
+        <option value="good">🙂 還算配合</option>
+        <option value="fair">😐 普通</option>
+        <option value="poor">😾 不太配合</option>
+        <option value="terrible">🙀 非常抗拒</option>
+      </select>
+
+      <label>修剪方式</label>
+      <select id="nailMethod">
+        <option value="self">自己修剪</option>
+        <option value="helper">有人幫忙固定</option>
+        <option value="groomer">寵物美容師</option>
+        <option value="vet">獸醫修剪</option>
+      </select>
+
+      <label>是否有流血</label>
+      <select id="nailBleed">
+        <option value="no">無流血</option>
+        <option value="slight">輕微流血</option>
+        <option value="yes">有流血</option>
+      </select>
+
+      <label>下次提醒（天數）</label>
+      <input id="nailRemindDays" type="number" value="14" min="1" max="90">
+
+      <label>備註</label>
+      <textarea id="nailNote" placeholder="例如：第3指比較難剪、左後掌掙扎嚴重..."></textarea>
+
+      <button class="btn blue" onclick="saveNail()">✂️ 儲存修甲記錄</button>
+    </div>
+
+    <div class="card">
+      <h2>📊 修甲分析</h2>
+      <div id="nailAnalysis"></div>
+    </div>
+
+    <div class="card">
+      <h2>📋 修甲記錄</h2>
+      <div id="nailList"></div>
     </div>
   </div>
 
@@ -292,6 +412,7 @@ textarea{min-height:85px;resize:vertical}
   <div class="nav">
     <button class="active" onclick="go('profile',this)"><span>📋</span>寵物</button>
     <button onclick="go('daily',this)"><span>🍽️</span>日常</button>
+    <button onclick="go('nail',this)"><span>✂️</span>修甲</button>
     <button onclick="go('abnormal',this)"><span>⚠️</span>異常</button>
     <button onclick="go('hospital',this)"><span>🏥</span>醫院</button>
     <button onclick="go('vaccine',this)"><span>💉</span>疫苗</button>
@@ -342,7 +463,7 @@ var authMode="login";
 var data=emptyData();
 
 function emptyData(){
-  return {cats:[],food:[],toilet:[],abnormal:[],hospital:[],vaccine:[],diary:[],expense:[],ci:0};
+  return {cats:[],food:[],toilet:[],nail:[],abnormal:[],hospital:[],vaccine:[],diary:[],expense:[],ci:0};
 }
 
 function id(){
@@ -367,7 +488,7 @@ function normalize(x){
     if(!c.id)c.id=id();
     c.weights=arr(c.weights);
   });
-  ["food","toilet","abnormal","hospital","vaccine","diary","expense"].forEach(function(k){
+  ["food","toilet","nail","abnormal","hospital","vaccine","diary","expense"].forEach(function(k){
     d[k].forEach(function(r){if(!r.id)r.id=id();});
   });
   return d;
@@ -537,13 +658,13 @@ function attachUserData(){
 }
 
 function hasAnyData(d){
-  return d.cats.length||d.food.length||d.toilet.length||d.abnormal.length||d.hospital.length||d.vaccine.length||d.diary.length||d.expense.length;
+  return d.cats.length||d.food.length||d.toilet.length||d.nail.length||d.abnormal.length||d.hospital.length||d.vaccine.length||d.diary.length||d.expense.length;
 }
 
 /* APP */
 function initDates(){
   var n=new Date(),today=n.toISOString().split("T")[0];
-  ["foodDate","hospDate","vacDate","diaryDate","expDate","wDate"].forEach(function(i){
+  ["foodDate","hospDate","vacDate","diaryDate","expDate","wDate","nailDate"].forEach(function(i){
     var e=document.getElementById(i);
     if(e)e.value=today;
   });
@@ -576,6 +697,7 @@ function renderAll(){
   fillCats();
   renderProfile();
   renderDaily();
+  renderNail();
   renderAbn();
   renderHosp();
   renderVac();
@@ -585,7 +707,7 @@ function renderAll(){
 }
 
 function fillCats(){
-  ["foodCat","toiletCat","abnCat","hospCat","vacCat","expCat"].forEach(function(idn){
+  ["foodCat","toiletCat","nailCat","abnCat","hospCat","vacCat","expCat"].forEach(function(idn){
     var s=document.getElementById(idn);
     if(!s)return;
     s.innerHTML=data.cats.map(function(c,i){
@@ -632,7 +754,7 @@ function saveCat(){
       c.color=val("catColor");
       if(photo)c.photo=photo;
 
-      ["food","toilet","abnormal","hospital","vaccine","expense"].forEach(function(k){
+      ["food","toilet","nail","abnormal","hospital","vaccine","expense"].forEach(function(k){
         data[k].forEach(function(r){
           if(r.catId===c.id)r.catName=name;
         });
@@ -671,7 +793,7 @@ function deleteCat(i){
   var cid=data.cats[i].id;
   data.cats.splice(i,1);
 
-  ["food","toilet","abnormal","hospital","vaccine","expense"].forEach(function(k){
+  ["food","toilet","nail","abnormal","hospital","vaccine","expense"].forEach(function(k){
     data[k]=data[k].filter(function(r){return r.catId!==cid;});
   });
 
@@ -867,6 +989,212 @@ function checkWarn(){
   }).map(function(c){return c.name;});
 
   el.innerHTML=names.length?'<div class="warning">⚠️ '+names.join("、")+' 超過2天沒有排泄記錄</div>':"";
+}
+
+/* NAIL TRIMMING */
+var pawNames={LF:"左前掌",RF:"右前掌",LB:"左後掌",RB:"右後掌"};
+var pawNailCount={LF:5,RF:5,LB:4,RB:4};
+var coopLabels={excellent:"😊 非常配合",good:"🙂 還算配合",fair:"😐 普通",poor:"😾 不太配合",terrible:"🙀 非常抗拒"};
+var methodLabels={self:"自己修剪",helper:"有人幫忙固定",groomer:"寵物美容師",vet:"獸醫修剪"};
+var bleedLabels={no:"無流血",slight:"⚠️ 輕微流血",yes:"🩸 有流血"};
+
+function selectAllNails(){
+  document.querySelectorAll(".nail-paw").forEach(function(cb){cb.checked=true;});
+}
+
+function clearAllNails(){
+  document.querySelectorAll(".nail-paw").forEach(function(cb){cb.checked=false;});
+}
+
+function getSelectedNails(){
+  var paws={};
+  document.querySelectorAll(".nail-paw:checked").forEach(function(cb){
+    var paw=cb.getAttribute("data-paw");
+    if(!paws[paw])paws[paw]=[];
+    paws[paw].push(parseInt(cb.value));
+  });
+  return paws;
+}
+
+function getNailTotal(paws){
+  var total=0;
+  Object.keys(paws).forEach(function(k){total+=paws[k].length;});
+  return total;
+}
+
+function saveNail(){
+  if(!data.cats.length)return alert("請先新增貓咪");
+
+  var paws=getSelectedNails();
+  var totalNails=getNailTotal(paws);
+
+  if(totalNails===0)return alert("請至少選擇一個修剪的指甲");
+
+  var c=catBySelect("nailCat");
+  var date=val("nailDate");
+  if(!date)return alert("請選擇日期");
+
+  var remindDays=parseInt(val("nailRemindDays"))||14;
+  var nextDate=new Date(date);
+  nextDate.setDate(nextDate.getDate()+remindDays);
+  var nextStr=nextDate.toISOString().split("T")[0];
+
+  data.nail.push({
+    id:id(),
+    catId:c.id,
+    catName:c.name,
+    date:date,
+    paws:paws,
+    totalNails:totalNails,
+    cooperation:val("nailCoop"),
+    method:val("nailMethod"),
+    bleed:val("nailBleed"),
+    remindDays:remindDays,
+    nextDate:nextStr,
+    note:val("nailNote")
+  });
+
+  // Reset form
+  clearAllNails();
+  document.getElementById("nailNote").value="";
+  document.getElementById("nailCoop").value="good";
+  document.getElementById("nailBleed").value="no";
+
+  save();
+  renderNail();
+  bar("✅ 修甲記錄已儲存");
+}
+
+function renderNail(){
+  var elWarn=document.getElementById("nailWarn");
+  var elAnalysis=document.getElementById("nailAnalysis");
+  var elList=document.getElementById("nailList");
+  if(!elAnalysis||!elList)return;
+
+  // Warnings for due nails
+  if(elWarn){
+    var now=new Date();
+    var warnings=[];
+    data.cats.forEach(function(c){
+      var catNails=data.nail.filter(function(n){return n.catId===c.id;}).sort(function(a,b){return String(b.date).localeCompare(String(a.date));});
+      if(catNails.length){
+        var latest=catNails[0];
+        var nextD=new Date(latest.nextDate);
+        var diff=Math.ceil((nextD-now)/86400000);
+        if(diff<0){
+          warnings.push('🚨 <b>'+esc(c.name)+'</b> 修甲已過期 '+Math.abs(diff)+' 天！');
+        }else if(diff<=3){
+          warnings.push('⏰ <b>'+esc(c.name)+'</b> 還有 '+diff+' 天需要修甲');
+        }
+      }else if(data.nail.length>0){
+        // has nail records for other cats but not this one
+      }
+    });
+    elWarn.innerHTML=warnings.length?warnings.map(function(w){return '<div class="warning">'+w+'</div>';}).join(""):"";
+  }
+
+  // Analysis
+  if(data.nail.length===0){
+    elAnalysis.innerHTML='<div class="empty">尚無修甲資料可分析</div>';
+  }else{
+    var totalSessions=data.nail.length;
+    var totalNailsTrimmed=data.nail.reduce(function(s,n){return s+(n.totalNails||0);},0);
+    var bleedCount=data.nail.filter(function(n){return n.bleed&&n.bleed!=="no";}).length;
+
+    // Cooperation stats
+    var coopCount={excellent:0,good:0,fair:0,poor:0,terrible:0};
+    data.nail.forEach(function(n){
+      if(n.cooperation&&coopCount.hasOwnProperty(n.cooperation)){
+        coopCount[n.cooperation]++;
+      }
+    });
+    var bestCoop="";
+    var bestCoopVal=0;
+    Object.keys(coopCount).forEach(function(k){
+      if(coopCount[k]>bestCoopVal){bestCoopVal=coopCount[k];bestCoop=k;}
+    });
+
+    // Average interval
+    var intervals=[];
+    data.cats.forEach(function(c){
+      var catNails=data.nail.filter(function(n){return n.catId===c.id;}).sort(function(a,b){return String(a.date).localeCompare(String(b.date));});
+      for(var i=1;i<catNails.length;i++){
+        var d1=new Date(catNails[i-1].date);
+        var d2=new Date(catNails[i].date);
+        var diff=Math.round((d2-d1)/86400000);
+        if(diff>0)intervals.push(diff);
+      }
+    });
+    var avgInterval=intervals.length?Math.round(intervals.reduce(function(a,b){return a+b;},0)/intervals.length):0;
+
+    // Per-cat last trim
+    var catSummary=data.cats.map(function(c){
+      var catNails=data.nail.filter(function(n){return n.catId===c.id;}).sort(function(a,b){return String(b.date).localeCompare(String(a.date));});
+      if(!catNails.length)return '<div class="item"><b>🐱 '+esc(c.name)+'</b><div class="note">尚無修甲記錄</div></div>';
+
+      var latest=catNails[0];
+      var now=new Date();
+      var nextD=new Date(latest.nextDate);
+      var diff=Math.ceil((nextD-now)/86400000);
+      var status=diff<0?'<span class="nail-due">已過期 '+Math.abs(diff)+' 天</span>':diff<=3?'<span class="nail-due">'+diff+' 天後到期</span>':'<span class="nail-ok">'+diff+' 天後到期</span>';
+
+      // Check which paws were done in latest session
+      var pawStatus=Object.keys(pawNames).map(function(pk){
+        var maxNails=pawNailCount[pk];
+        var doneNails=latest.paws&&latest.paws[pk]?latest.paws[pk].length:0;
+        var isDone=doneNails===maxNails;
+        return '<span class="nail-tag '+(isDone?"done":"skip")+'">'+pawNames[pk]+' '+doneNails+'/'+maxNails+'</span>';
+      }).join("");
+
+      return '<div class="item"><b>🐱 '+esc(c.name)+'</b><div class="note">上次修甲：'+latest.date+'</div><div class="note">下次建議：'+latest.nextDate+' '+status+'</div><div class="nail-summary">'+pawStatus+'</div></div>';
+    }).join("");
+
+    elAnalysis.innerHTML=
+      '<div class="grid">'+
+      stat("總修甲次數",totalSessions+"次")+
+      stat("總修剪指甲",totalNailsTrimmed+"隻")+
+      stat("流血次數",bleedCount+"次")+
+      stat("平均間隔",avgInterval?avgInterval+"天":"--")+
+      '</div>'+
+      (bestCoop?'<div style="margin-top:12px"><b>最常見配合度：</b> '+(coopLabels[bestCoop]||bestCoop)+' ('+bestCoopVal+'次)</div>':'')+
+      '<h3>各貓狀態</h3>'+catSummary;
+  }
+
+  // Record list
+  if(!data.nail.length){
+    elList.innerHTML='<div class="empty"><span>✂️</span>沒有修甲記錄</div>';
+    return;
+  }
+
+  elList.innerHTML=data.nail.slice().sort(function(a,b){
+    return String(b.date).localeCompare(String(a.date));
+  }).map(function(n){
+    var pawDetail=Object.keys(pawNames).map(function(pk){
+      var done=n.paws&&n.paws[pk]?n.paws[pk]:[];
+      if(!done.length)return '';
+      return pawNames[pk]+'：指 '+done.join(",");
+    }).filter(Boolean).join("　|　");
+
+    var coopText=coopLabels[n.cooperation]||n.cooperation||"";
+    var methodText=methodLabels[n.method]||n.method||"";
+    var bleedText=bleedLabels[n.bleed]||n.bleed||"";
+
+    var tags='';
+    if(n.bleed&&n.bleed!=="no"){
+      tags+='<span class="nail-tag issue">'+bleedText+'</span> ';
+    }
+    tags+='<span class="nail-tag done">'+coopText+'</span> ';
+
+    return '<div class="item">'+
+      '<div class="item-title">✂️ '+esc(n.catName)+' 修甲</div>'+
+      '<div class="meta">'+n.date+'　'+methodText+'　共 '+(n.totalNails||0)+' 隻指甲</div>'+
+      '<div class="note">'+pawDetail+'</div>'+
+      '<div class="nail-summary">'+tags+'</div>'+
+      (n.note?'<div class="note">📝 '+esc(n.note)+'</div>':'')+
+      '<div class="meta">下次建議：'+n.nextDate+'</div>'+
+      '<button class="btn small red" onclick="delRec(\'nail\',\''+n.id+'\')">刪除</button>'+
+      '</div>';
+  }).join("");
 }
 
 /* ABNORMAL */
